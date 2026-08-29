@@ -22,6 +22,8 @@ function App() {
   })
 
   const [selectedGalleryIndex, setSelectedGalleryIndex] = useState(null)
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('')
   const [bookings, setBookings] = useState([])
   const [events, setEvents] = useState([])
   const [isAdmin, setIsAdmin] = useState(false)
@@ -1921,22 +1923,67 @@ const handleBookingSubmit = async (e) => {
      <section id="bookings" className="bookings-section">
 
   <div className="section-heading">
-    <p>EVENT MANAGEMENT</p>
+    <p>VK EVENTS MANAGEMENT</p>
+
     <h2>Customer Enquiries</h2>
+
     <div className="gold-line"></div>
+    
+    <button
+  type="button"
+  className="refresh-enquiries-btn"
+  onClick={fetchBookings}
+>
+  ↻ Refresh Enquiries
+</button>
+    </div>
+
+  <div className="enquiry-search">
+    <input
+      type="text"
+      placeholder="Search by name, phone, event or location..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+    />
+  </div>
+
+  <div className="enquiries-header">
+
+    <div>
+      <h3>All Customer Enquiries</h3>
+
+
+      <p>
+        Manage and review customer event requests.
+      </p>
+    </div>
+
+    <div className="enquiries-count">
+      <span>Total</span>
+      <strong>{bookings.length}</strong>
+    </div>
+
   </div>
 
   {bookingsLoading ? (
 
-    <p className="contact-intro">
-      Loading customer enquiries...
-    </p>
+    <div className="dashboard-empty">
+      <span>📋</span>
+
+      <p>
+        Loading customer enquiries...
+      </p>
+    </div>
 
   ) : bookings.length === 0 ? (
 
-    <p className="contact-intro">
-      No customer enquiries found.
-    </p>
+    <div className="dashboard-empty">
+      <span>📋</span>
+
+      <p>
+        No customer enquiries found.
+      </p>
+    </div>
 
   ) : (
 
@@ -1959,41 +2006,87 @@ const handleBookingSubmit = async (e) => {
 
         <tbody>
 
-          {bookings.map((item) => (
+         {bookings
+  .filter((item) => {
+    const search = searchTerm.toLowerCase()
+
+    return (
+      item.name?.toLowerCase().includes(search) ||
+      item.phone?.toLowerCase().includes(search) ||
+      item.event_type?.toLowerCase().includes(search) ||
+      item.location?.toLowerCase().includes(search)
+    )
+  })
+  .map((item) => (
 
             <tr key={item.id}>
 
-              <td>{item.name}</td>
+              <td>
+                <strong className="customer-name">
+                  {item.name}
+                </strong>
+              </td>
 
-              <td>{item.phone}</td>
+              <td>
+                <span className="customer-phone">
+                  {item.phone}
+                </span>
+              </td>
 
-              <td>{item.event_type}</td>
+              <td>
+                <span className="event-badge">
+                  {item.event_type}
+                </span>
+              </td>
 
-              <td>{item.event_date}</td>
+              <td>
+  {item.event_date
+    ? new Date(item.event_date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })
+    : "-"}
+</td>
 
-              <td>{item.location}</td>
+              <td>
+                {item.location}
+              </td>
 
               <td>
                 {item.guests || '-'}
               </td>
 
-              <td>
+              <td className="message-cell">
                 {item.message || '-'}
               </td>
+<td>
 
-              <td>
+  <button
+    type="button"
+    className="view-booking-button"
+    onClick={() => setSelectedBooking(item)}
+  >
+    View
+  </button>
 
-                <button
-                  type="button"
-                  className="delete-booking-button"
-                  onClick={() =>
-                    handleDeleteBooking(item.id)
-                  }
-                >
-                  Delete
-                </button>
+  <button
+    type="button"
+    className="delete-booking-button"
+    onClick={() => {
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this enquiry?"
+      );
 
-              </td>
+      if (confirmed) {
+        handleDeleteBooking(item.id);
+      }
+    }}
+  >
+    Delete
+  </button>
+
+</td>
 
             </tr>
 
@@ -2008,6 +2101,83 @@ const handleBookingSubmit = async (e) => {
   )}
 
 </section>
+{selectedBooking && (
+  <div
+    className="booking-modal-overlay"
+    onClick={() => setSelectedBooking(null)}
+  >
+    <div
+      className="booking-modal"
+      onClick={(e) => e.stopPropagation()}
+    >
+
+      <button
+        className="booking-modal-close"
+        onClick={() => setSelectedBooking(null)}
+      >
+        ×
+      </button>
+
+      <p className="modal-label">
+        CUSTOMER ENQUIRY
+      </p>
+
+      <h2>
+        {selectedBooking.name}
+      </h2>
+
+      <div className="booking-details">
+
+        <p>
+          <strong>Phone:</strong>{" "}
+          {selectedBooking.phone}
+        </p>
+
+        <p>
+          <strong>Event:</strong>{" "}
+          {selectedBooking.event_type}
+        </p>
+
+        <p>
+          <strong>Date:</strong>{" "}
+          {selectedBooking.event_date
+            ? new Date(
+                selectedBooking.event_date
+              ).toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })
+            : "-"}
+        </p>
+
+        <p>
+          <strong>Location:</strong>{" "}
+          {selectedBooking.location || "-"}
+        </p>
+
+        <p>
+          <strong>Guests:</strong>{" "}
+          {selectedBooking.guests || "-"}
+        </p>
+
+        <p>
+          <strong>Message:</strong>{" "}
+          {selectedBooking.message || "-"}
+        </p>
+
+      </div>
+
+      <button
+        className="close-details-button"
+        onClick={() => setSelectedBooking(null)}
+      >
+        Close
+      </button>
+
+    </div>
+  </div>
+)}
       {/* =========================
           FOOTER
           ========================= */}
