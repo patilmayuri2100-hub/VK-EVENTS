@@ -1,8 +1,11 @@
 # Environment variables
+backend/.env
 .env
 *.env
+.env.local
 
 # Node modules
+backend/node_modules/
 node_modules/
 
 # Logs
