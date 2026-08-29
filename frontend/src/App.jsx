@@ -33,6 +33,12 @@ const [eventsLoading, setEventsLoading] = useState(false)
 
   if (username === 'Vishal_Chouksey' && password === 'VK@2122') {
     setIsAdmin(true)
+
+setTimeout(() => {
+  document.getElementById('dashboard')?.scrollIntoView({
+    behavior: 'smooth'
+  })
+}, 100)
   } else {
     alert('Invalid admin username or password.')
   }
@@ -121,6 +127,16 @@ const [eventsLoading, setEventsLoading] = useState(false)
   useEffect(() => {
   fetchEvents()
 }, [])
+useEffect(() => {
+  if (isAdmin) {
+    setTimeout(() => {
+      document.getElementById('dashboard')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+    }, 300)
+  }
+}, [isAdmin])
 
   /* =========================
      DELETE BOOKING
@@ -482,12 +498,7 @@ const handleBookingSubmit = async (e) => {
     id="dashboard"
     className="dashboard-section"
   >
-    <button
-  className="admin-logout-btn"
-  onClick={() => setIsAdmin(false)}
->
-  Logout
-</button>
+    
     
 
         <div className="section-heading">
