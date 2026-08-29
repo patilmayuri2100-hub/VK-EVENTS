@@ -24,8 +24,19 @@ function App() {
   const [selectedGalleryIndex, setSelectedGalleryIndex] = useState(null)
   const [bookings, setBookings] = useState([])
   const [events, setEvents] = useState([])
+  const [isAdmin, setIsAdmin] = useState(false)
 const [eventsLoading, setEventsLoading] = useState(false)
   const [bookingsLoading, setBookingsLoading] = useState(false)
+  const handleAdminLogin = () => {
+  const username = prompt('Enter Admin Username:')
+  const password = prompt('Enter Admin Password:')
+
+  if (username === 'Vishal_Chouksey' && password === 'VK@2122') {
+    setIsAdmin(true)
+  } else {
+    alert('Invalid admin username or password.')
+  }
+}
 
   /* =========================
      DASHBOARD COUNTS
@@ -356,7 +367,9 @@ const handleBookingSubmit = async (e) => {
 
           <a href="#home">Home</a>
 
-          <a href="#dashboard">Dashboard</a>
+         {isAdmin && (
+  <a href="#dashboard">Dashboard</a>
+)}
 
           <a href="#events">Events</a>
 
@@ -368,7 +381,21 @@ const handleBookingSubmit = async (e) => {
           <a href="#about">About</a>
 
           <a href="#contact">Contact</a>
-
+          {isAdmin ? (
+  <button
+    className="admin-login-btn"
+    onClick={() => setIsAdmin(false)}
+  >
+    Logout
+  </button>
+) : (
+  <button
+    className="admin-login-btn"
+    onClick={handleAdminLogin}
+  >
+    Admin Login
+  </button>
+)}
           <a href="#bookings">Enquiries</a>
 
         </div>
@@ -450,10 +477,18 @@ const handleBookingSubmit = async (e) => {
           DASHBOARD
           ========================= */}
 
-      <section
-        id="dashboard"
-        className="dashboard-section"
-      >
+     {isAdmin && (
+  <section
+    id="dashboard"
+    className="dashboard-section"
+  >
+    <button
+  className="admin-logout-btn"
+  onClick={() => setIsAdmin(false)}
+>
+  Logout
+</button>
+    
 
         <div className="section-heading">
 
@@ -855,6 +890,7 @@ const handleBookingSubmit = async (e) => {
         </div>
 
       </section>
+      )}
 
       {/* =========================
           EVENTS
