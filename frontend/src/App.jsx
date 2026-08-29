@@ -9,8 +9,7 @@ import inauguration from './assets/gallery/inauguration.jpg'
 import eventImage from './assets/gallery/event.jpg'
 import wedding from './assets/gallery/wedding.jpg'
 
-const API_URL = 'http://localhost:5000'
-
+const API_URL = "https://vk-events.onrender.com";
 function App() {
   const [booking, setBooking] = useState({
     name: '',
