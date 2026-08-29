@@ -119,9 +119,9 @@ app.get("/api/bookings", function (req, res) {
   `;
 
   db.query(sql, function (err, results) {
-
-    if (err) {
+  if (err) {
       console.log(
+  
         "Bookings database error: " + err.message
       );
 
@@ -282,10 +282,10 @@ app.post("/api/events", function (req, res) {
 // START SERVER
 // =========================
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, function () {
   console.log(
-    "VK EVENTS Backend running on http://localhost:5000"
+    `VK EVENTS Backend running on port ${PORT}`
   );
 });
