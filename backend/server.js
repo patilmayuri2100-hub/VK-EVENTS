@@ -1,13 +1,42 @@
-
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
+const multer = require("multer");
+const path = require("path");
 require('dotenv').config();
+
 const app = express();
+// =========================
+// GALLERY UPLOAD SETUP
+// =========================
+
+const storage = multer.diskStorage({
+
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+
+  filename: function (req, file, cb) {
+
+    const uniqueName =
+      Date.now() +
+      "-" +
+      file.originalname.replace(/\s+/g, "-");
+
+    cb(null, uniqueName);
+  }
+
+});
+const upload = multer({
+  storage: storage
+});
 
 app.use(cors());
 app.use(express.json());
-
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -277,6 +306,476 @@ app.post("/api/events", function (req, res) {
   });
 
 });
+// =========================
+// DELETE EVENT
+// =========================
+
+app.delete("/api/events/:id", function (req, res) {
+  console.log("DELETE EVENT REQUEST RECEIVED:", req.params.id);
+
+  const eventId = req.params.id;
+
+  const sql = `
+    DELETE FROM events
+    WHERE id = ?
+  `;
+
+  db.query(sql, [eventId], function (err, result) {
+
+    if (err) {
+      console.log(
+        "Delete event database error: " + err.message
+      );
+
+      return res.status(500).json({
+        success: false,
+        message: "Failed to delete event."
+      });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Event not found."
+      });
+    }
+
+    console.log(
+      "Event deleted: " + eventId
+    );
+
+    res.json({
+      success: true,
+      message: "Event deleted successfully!"
+    });
+
+  });
+
+});
+
+// =========================
+// EDIT EVENT
+// =========================
+
+app.put("/api/events/:id", function (req, res) {
+
+  console.log("EDIT EVENT REQUEST RECEIVED:", req.params.id);
+  console.log("EDIT EVENT DATA:", req.body);
+
+  const eventId = req.params.id;
+
+  const name = req.body.name;
+  const date = req.body.date;
+  const location = req.body.location;
+  const event_type = req.body.event_type;
+
+  if (!name || !date || !location || !event_type) {
+    return res.status(400).json({
+      success: false,
+      message: "Please fill all event fields."
+    });
+  }
+
+  const sql = `
+    UPDATE events
+    SET name = ?,
+        date = ?,
+        location = ?,
+        event_type = ?
+    WHERE id = ?
+  `;
+
+  db.query(
+    sql,
+    [
+      name,
+      date,
+      location,
+      event_type,
+      eventId
+    ],
+    function (err, result) {
+
+      if (err) {
+
+        console.log(
+          "Edit event database error:",
+          err.message
+        );
+
+        return res.status(500).json({
+          success: false,
+          message: "Failed to edit event."
+        });
+      }
+
+      if (result.affectedRows === 0) {
+
+        return res.status(404).json({
+          success: false,
+          message: "Event not found."
+        });
+      }
+
+      console.log(
+        "Event updated:",
+        eventId
+      );
+
+      res.json({
+        success: true,
+        message: "Event updated successfully!"
+      });
+
+    }
+  );
+
+});
+
+// =========================
+// GET GALLERY
+// =========================
+
+app.get("/api/gallery", function (req, res) {
+
+  console.log("GET GALLERY REQUEST RECEIVED");
+
+  const sql = `
+    SELECT id, title, category, image
+    FROM gallery
+    ORDER BY id DESC
+  `;
+
+  db.query(sql, function (err, results) {
+
+    if (err) {
+      console.log(
+        "Gallery fetch database error:",
+        err.message
+      );
+
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch gallery."
+      });
+    }
+
+    res.json({
+      success: true,
+      images: results
+    });
+
+  });
+
+});
+// =========================
+// GALLERY UPLOAD
+// =========================
+
+app.post(
+  "/api/gallery",
+  upload.single("image"),
+  function (req, res) {
+
+    console.log("GALLERY UPLOAD REQUEST RECEIVED");
+
+    const title = req.body.title;
+    const category = req.body.category;
+
+    if (!title || !category || !req.file) {
+
+      return res.status(400).json({
+        success: false,
+        message: "Please provide title, category and image."
+      });
+
+    }
+
+    const image = "/uploads/" + req.file.filename;
+
+    const sql = `
+      INSERT INTO gallery
+      (title, category, image)
+      VALUES (?, ?, ?)
+    `;
+
+    db.query(
+      sql,
+      [title, category, image],
+      function (err, result) {
+
+        if (err) {
+
+          console.log(
+            "Gallery upload database error:",
+            err.message
+          );
+
+          return res.status(500).json({
+            success: false,
+            message: "Failed to save gallery photo."
+          });
+        }
+
+        console.log(
+          "Gallery photo uploaded:",
+          result.insertId
+        );
+
+        res.json({
+          success: true,
+          message: "Gallery photo uploaded successfully!",
+          id: result.insertId,
+          image: image
+        });
+
+      }
+    );
+
+  }
+);
+// =========================
+// DELETE GALLERY PHOTO
+// =========================
+
+app.delete("/api/gallery/:id", function (req, res) {
+
+  const galleryId = req.params.id;
+
+  console.log(
+    "DELETE GALLERY REQUEST RECEIVED:",
+    galleryId
+  );
+
+  const sql = `
+    DELETE FROM gallery
+    WHERE id = ?
+  `;
+
+  db.query(
+    sql,
+    [galleryId],
+    function (err, result) {
+
+      if (err) {
+
+        console.log(
+          "Gallery delete database error:",
+          err.message
+        );
+
+        return res.status(500).json({
+          success: false,
+          message: "Failed to delete gallery photo."
+        });
+
+      }
+
+      if (result.affectedRows === 0) {
+
+        return res.status(404).json({
+          success: false,
+          message: "Gallery photo not found."
+        });
+
+      }
+
+      console.log(
+        "Gallery photo deleted:",
+        galleryId
+      );
+
+      res.json({
+        success: true,
+        message: "Gallery photo deleted successfully!"
+      });
+
+    }
+  );
+
+});
+
+// =========================
+// ADMIN LOGIN
+// =========================
+
+app.post("/api/admin/login", function (req, res) {
+
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({
+      success: false,
+      message: "Username and password are required."
+    });
+  }
+
+  const sql = `
+    SELECT id, username, password
+    FROM admin
+    WHERE username = ?
+    LIMIT 1
+  `;
+
+  db.query(
+    sql,
+    [username],
+    function (err, results) {
+
+      if (err) {
+
+        console.log(
+          "Admin login database error:",
+          err.message
+        );
+
+        return res.status(500).json({
+          success: false,
+          message: "Unable to process admin login."
+        });
+      }
+
+      if (
+        results.length === 0 ||
+        results[0].password !== password
+      ) {
+
+        return res.status(401).json({
+          success: false,
+          message: "Invalid admin username or password."
+        });
+
+      }
+
+      res.json({
+        success: true,
+        message: "Admin login successful."
+      });
+
+    }
+  );
+
+});
+
+
+// =========================
+// CHANGE ADMIN PASSWORD
+// =========================
+console.log("CHANGE PASSWORD ROUTE LOADED");
+app.put("/api/admin/change-password", function (req, res) {
+  console.log("CHANGE PASSWORD REQUEST RECEIVED");
+
+  const {
+    username,
+    currentPassword,
+    newPassword
+  } = req.body;
+
+  if (
+    !username ||
+    !currentPassword ||
+    !newPassword
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message: "Please provide all password fields."
+    });
+
+  }
+
+  if (newPassword.length < 6) {
+
+    return res.status(400).json({
+      success: false,
+      message: "New password must be at least 6 characters long."
+    });
+
+  }
+
+  const findSql = `
+    SELECT id, password
+    FROM admin
+    WHERE username = ?
+    LIMIT 1
+  `;
+
+  db.query(
+    findSql,
+    [username],
+    function (err, results) {
+      console.log("CHANGE PASSWORD RESULTS:", results);
+
+      if (err) {
+
+        console.log(
+          "Change password database error:",
+          err.message
+        );
+
+        return res.status(500).json({
+          success: false,
+          message: "Unable to change password."
+        });
+
+      }
+
+      if (results.length === 0) {
+
+        return res.status(404).json({
+          success: false,
+          message: "Admin account not found."
+        });
+
+      }
+
+      if (results[0].password !== currentPassword) {
+
+        return res.status(401).json({
+          success: false,
+          message: "Current password is incorrect."
+        });
+
+      }
+
+      const updateSql = `
+        UPDATE admin
+        SET password = ?
+        WHERE id = ?
+      `;
+
+      db.query(
+        updateSql,
+        [newPassword, results[0].id],
+        function (updateErr) {
+
+          if (updateErr) {
+
+            console.log(
+              "Password update database error:",
+              updateErr.message
+            );
+
+            return res.status(500).json({
+              success: false,
+              message: "Failed to update password."
+            });
+
+          }
+
+          res.json({
+            success: true,
+            message: "Password changed successfully!"
+          });
+
+        }
+      );
+
+    }
+  );
+
+});
+
 
 // =========================
 // START SERVER
@@ -285,7 +784,9 @@ app.post("/api/events", function (req, res) {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, function () {
+
   console.log(
     `VK EVENTS Backend running on port ${PORT}`
   );
+
 });

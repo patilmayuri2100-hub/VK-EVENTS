@@ -8,8 +8,9 @@ import convocation from './assets/gallery/convocation .jpg'
 import inauguration from './assets/gallery/inauguration.jpg'
 import eventImage from './assets/gallery/event.jpg'
 import wedding from './assets/gallery/wedding.jpg'
+import vishalFounder from './assets/vishal-founder.jpeg'
 
-const API_URL = "https://vk-events.onrender.com";
+const API_URL = "http://localhost:5000"
 function App() {
   const [booking, setBooking] = useState({
     name: '',
@@ -24,25 +25,349 @@ function App() {
   const [selectedGalleryIndex, setSelectedGalleryIndex] = useState(null)
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [searchTerm, setSearchTerm] = useState('')
+  const [eventFilter, setEventFilter] = useState('All')
   const [bookings, setBookings] = useState([])
   const [events, setEvents] = useState([])
   const [isAdmin, setIsAdmin] = useState(false)
-const [eventsLoading, setEventsLoading] = useState(false)
+  const [showAdminLogin, setShowAdminLogin] = useState(false)
+  const [adminUsername, setAdminUsername] = useState("")
+  const [adminPassword, setAdminPassword] = useState("")
+  const [showChangePassword, setShowChangePassword] = useState(false)
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [eventsLoading, setEventsLoading] = useState(false)
   const [bookingsLoading, setBookingsLoading] = useState(false)
-  const handleAdminLogin = () => {
-  const username = prompt('Enter Admin Username:')
-  const password = prompt('Enter Admin Password:')
+  const [newEvent, setNewEvent] = useState({
+    
+  name: '',
+  date: '',
+  location: '',
+  event_type: ''
+})
+const [galleryTitle, setGalleryTitle] = useState('')
+const [galleryCategory, setGalleryCategory] = useState('')
+const [galleryFile, setGalleryFile] = useState(null)
+const [galleryUploading, setGalleryUploading] = useState(false)
+const [uploadedGalleryImages, setUploadedGalleryImages] = useState([])
 
-  if (username === 'Vishal_Chouksey' && password === 'VK@2122') {
-    setIsAdmin(true)
+const handleEventChange = (e) => {
+  const { name, value } = e.target
 
-setTimeout(() => {
-  document.getElementById('dashboard')?.scrollIntoView({
-    behavior: 'smooth'
-  })
-}, 100)
-  } else {
-    alert('Invalid admin username or password.')
+  setNewEvent((prev) => ({
+    ...prev,
+    [name]: value
+  }))
+}
+const handleAddEvent = async (e) => {
+  e.preventDefault()
+
+  if (
+    !newEvent.name ||
+    !newEvent.date ||
+    !newEvent.location ||
+    !newEvent.event_type
+  ) {
+    alert("Please fill all event fields.")
+    return
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/api/events`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newEvent)
+    })
+
+    const data = await response.json()
+
+    if (!response.ok || !data.success) {
+      alert(data.message || "Failed to add event.")
+      return
+    }
+
+    alert("Event added successfully!")
+
+    setNewEvent({
+      name: "",
+      date: "",
+      location: "",
+      event_type: ""
+    })
+
+    fetchEvents()
+
+  } catch (error) {
+    console.error("Add event error:", error)
+    alert("Unable to connect to VK EVENTS server.")
+  }
+}
+const fetchGalleryImages = async () => {
+
+  try {
+
+    const response = await fetch(
+      `${API_URL}/api/gallery`
+    )
+
+    const data = await response.json()
+
+    if (data.success) {
+
+      const formattedImages = data.images.map(
+        (item) => ({
+          id: item.id,
+          image: `${API_URL}${item.image}`,
+          title: item.title,
+          category: item.category
+        })
+      )
+
+      setUploadedGalleryImages(
+        formattedImages
+      )
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      'Gallery fetch error:',
+      error
+    )
+
+  }
+
+}
+const handleDeleteGallery = async (id) => {
+
+  const confirmDelete = window.confirm(
+    'Are you sure you want to delete this gallery photo?'
+  )
+
+  if (!confirmDelete) {
+    return
+  }
+
+  try {
+
+    const response = await fetch(
+      `${API_URL}/api/gallery/${id}`,
+      {
+        method: 'DELETE'
+      }
+    )
+
+    const data = await response.json()
+
+    if (!response.ok || !data.success) {
+
+      alert(
+        data.message ||
+        'Failed to delete gallery photo.'
+      )
+
+      return
+    }
+
+    alert('Gallery photo deleted successfully!')
+
+    // Remove the deleted photo immediately
+    setUploadedGalleryImages((previousImages) =>
+      previousImages.filter(
+        (image) => image.id !== id
+      )
+    )
+
+  } catch (error) {
+
+    console.error(
+      'Gallery delete error:',
+      error
+    )
+
+    alert(
+      'Unable to connect to VK EVENTS server.'
+    )
+
+  }
+
+}
+const handleGalleryUpload = async (e) => {
+  e.preventDefault()
+
+  if (!galleryTitle || !galleryCategory || !galleryFile) {
+    alert('Please enter a title, select a category and choose a photo.')
+    return
+  }
+
+  const formData = new FormData()
+
+  formData.append('title', galleryTitle)
+  formData.append('category', galleryCategory)
+  formData.append('image', galleryFile)
+
+  try {
+    setGalleryUploading(true)
+
+    const response = await fetch(
+      `${API_URL}/api/gallery`,
+      {
+        method: 'POST',
+        body: formData
+      }
+    )
+
+    const data = await response.json()
+
+    if (!response.ok || !data.success) {
+      alert(data.message || 'Failed to upload photo.')
+      return
+    }
+
+    alert('Gallery photo uploaded successfully!')
+
+    setGalleryTitle('')
+    setGalleryCategory('')
+    setGalleryFile(null)
+  } catch (error) {
+
+    console.error(
+      'Gallery upload error:',
+      error
+    )
+
+    alert(
+      'Unable to connect to VK EVENTS server.'
+    )
+
+  } finally {
+    setGalleryUploading(false)
+  }
+}
+const handleAdminLogin = async () => {
+
+  if (!adminUsername || !adminPassword) {
+    alert("Please enter username and password.")
+    return
+  }
+
+  try {
+
+    const response = await fetch(
+      `${API_URL}/api/admin/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: adminUsername,
+          password: adminPassword
+        })
+      }
+    )
+
+    const data = await response.json()
+
+    if (response.ok && data.success) {
+
+      setIsAdmin(true)
+      setShowAdminLogin(false)
+
+      setAdminUsername("")
+      setAdminPassword("")
+
+      alert("Admin login successful!")
+
+    } else {
+
+      alert(
+        data.message ||
+        "Invalid admin username or password."
+      )
+
+    }
+
+  } catch (error) {
+
+    console.error("Admin login error:", error)
+
+    alert(
+      "Unable to connect to the VK EVENTS server."
+    )
+  }
+}
+const handleChangePassword = async () => {
+
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    alert("Please fill all password fields.")
+    return
+  }
+
+  if (newPassword.length < 6) {
+    alert("New password must be at least 6 characters long.")
+    return
+  }
+
+  if (newPassword !== confirmPassword) {
+    alert("New password and confirm password do not match.")
+    return
+  }
+
+  try {
+
+    console.log("CHANGE PASSWORD BUTTON CLICKED")
+
+    const response = await fetch(
+      `${API_URL}/api/admin/change-password`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: "Vishal_Chouksey",
+          currentPassword: currentPassword,
+          newPassword: newPassword
+        })
+      }
+    )
+
+    const data = await response.json()
+
+    console.log("CHANGE PASSWORD RESPONSE:", data)
+
+    if (response.ok && data.success) {
+
+      alert("Password changed successfully!")
+
+      setCurrentPassword("")
+      setNewPassword("")
+      setConfirmPassword("")
+      setShowChangePassword(false)
+
+    } else {
+
+      alert(
+        data.message ||
+        "Unable to change password."
+      )
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Change password error:",
+      error
+    )
+
+    alert(
+      "Unable to connect to the VK EVENTS server."
+    )
   }
 }
 
@@ -51,6 +376,35 @@ setTimeout(() => {
      ========================= */
 
   const totalEnquiries = bookings.length
+    const otherEnquiries = bookings.filter(
+    (item) =>
+      item.event_type !== 'Wedding' &&
+      item.event_type !== 'Birthday Party' &&
+      item.event_type !== 'Convocation' &&
+      item.event_type !== 'Inauguration'
+  ).length
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const upcomingEventCount = events.filter((event) => {
+    if (!event.date) return false
+
+    const eventDate = new Date(event.date)
+    eventDate.setHours(0, 0, 0, 0)
+
+    return eventDate >= today
+  }).length
+
+  const upcomingBookingCount = bookings.filter((item) => {
+    if (!item.event_date) return false
+
+    const eventDate = new Date(
+      `${item.event_date}T00:00:00`
+    )
+
+    return eventDate >= today
+  }).length
 
   const weddingEnquiries = bookings.filter(
     (item) => item.event_type === 'Wedding'
@@ -130,6 +484,9 @@ setTimeout(() => {
   fetchEvents()
 }, [])
 useEffect(() => {
+  fetchGalleryImages()
+}, [])
+useEffect(() => {
   if (isAdmin) {
     setTimeout(() => {
       document.getElementById('dashboard')?.scrollIntoView({
@@ -179,7 +536,140 @@ useEffect(() => {
       alert('Unable to connect to the VK EVENTS server.')
     }
   }
+/* =========================
+   DELETE EVENT
+   ========================= */
 
+const handleDeleteEvent = async (id) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/api/events/${id}`,
+      {
+        method: 'DELETE'
+      }
+    )
+
+    const data = await response.json()
+
+    console.log('Delete event response:', response.status, data)
+
+    if (response.ok && data.success) {
+      alert('Event deleted successfully!')
+
+      setEvents((previousEvents) =>
+        previousEvents.filter(
+          (event) => event.id !== id
+        )
+      )
+    } else {
+      alert(
+        data.message || 'Unable to delete event.'
+      )
+    }
+
+  } catch (error) {
+    console.error('Delete event error:', error)
+
+    alert(
+      'Unable to connect to the VK EVENTS server.'
+    )
+  }
+}
+ /* =========================
+   EDIT EVENT
+   ========================= */
+
+const handleEditEvent = async (event) => {
+
+  const name = window.prompt(
+    'Enter Event Name:',
+    event.name
+  )
+
+  if (name === null) {
+    return
+  }
+
+  const date = window.prompt(
+    'Enter Event Date (YYYY-MM-DD):',
+    event.date
+      ? new Date(event.date).toISOString().split('T')[0]
+      : ''
+  )
+
+  if (date === null) {
+    return
+  }
+
+  const location = window.prompt(
+    'Enter Event Location:',
+    event.location
+  )
+
+  if (location === null) {
+    return
+  }
+
+  const event_type = window.prompt(
+    'Enter Event Type:',
+    event.event_type
+  )
+
+  if (event_type === null) {
+    return
+  }
+
+  if (!name || !date || !location || !event_type) {
+    alert('Please fill all event fields.')
+    return
+  }
+
+  try {
+
+    const response = await fetch(
+      `${API_URL}/api/events/${event.id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name,
+          date,
+          location,
+          event_type
+        })
+      }
+    )
+
+    const data = await response.json()
+
+    if (response.ok && data.success) {
+
+      alert('Event updated successfully!')
+
+      fetchEvents()
+
+    } else {
+
+      alert(
+        data.message || 'Failed to update event.'
+      )
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      'Edit event error:',
+      error
+    )
+
+    alert(
+      'Unable to connect to VK EVENTS server.'
+    )
+  }
+}
   /* =========================
      SUBMIT BOOKING
      ========================= */
@@ -283,42 +773,47 @@ const handleBookingSubmit = async (e) => {
   }
 }
 
-  /* =========================
-     GALLERY
-     ========================= */
+/* =========================
+   GALLERY
+   ========================= */
 
-  const galleryImages = [
-    {
-      image: wedding,
-      title: 'Wedding Events',
-      category: 'Wedding'
-    },
-    {
-      image: birthday,
-      title: 'Birthday Celebrations',
-      category: 'Birthday Party'
-    },
-    {
-      image: reception,
-      title: 'Wedding Reception',
-      category: 'Wedding Function'
-    },
-    {
-      image: convocation,
-      title: 'Convocation Ceremony',
-      category: 'Convocation'
-    },
-    {
-      image: inauguration,
-      title: 'Inauguration Events',
-      category: 'Inauguration'
-    },
-    {
-      image: eventImage,
-      title: 'Special Events',
-      category: 'Other Events'
-    }
-  ]
+const defaultGalleryImages = [
+  {
+    image: wedding,
+    title: 'Wedding Events',
+    category: 'Wedding'
+  },
+  {
+    image: birthday,
+    title: 'Birthday Celebrations',
+    category: 'Birthday Party'
+  },
+  {
+    image: reception,
+    title: 'Wedding Reception',
+    category: 'Wedding Function'
+  },
+  {
+    image: convocation,
+    title: 'Convocation Ceremony',
+    category: 'Convocation'
+  },
+  {
+    image: inauguration,
+    title: 'Inauguration Events',
+    category: 'Inauguration'
+  },
+  {
+    image: eventImage,
+    title: 'Special Events',
+    category: 'Other Events'
+  }
+]
+
+const galleryImages = [
+  ...defaultGalleryImages,
+  ...uploadedGalleryImages
+]
 
   /* =========================
      UPCOMING BOOKINGS
@@ -388,9 +883,6 @@ const handleBookingSubmit = async (e) => {
          {isAdmin && (
   <a href="#dashboard">Dashboard</a>
 )}
-
-          <a href="#events">Events</a>
-
           <a href="#services">Services</a>
            <a href="#process">How We Work</a>
           <a href="#why">Why Us</a>
@@ -399,22 +891,34 @@ const handleBookingSubmit = async (e) => {
           <a href="#about">About</a>
 
           <a href="#contact">Contact</a>
-          {isAdmin ? (
-  <button
-    className="admin-login-btn"
-    onClick={() => setIsAdmin(false)}
-  >
-    Logout
-  </button>
+    {isAdmin ? (
+  <>
+    <button
+      className="admin-login-btn"
+      onClick={() => setIsAdmin(false)}
+    >
+      Logout
+    </button>
+
+    <button
+      className="admin-login-btn"
+      onClick={() => setShowChangePassword(true)}
+    >
+      Change Password
+    </button>
+
+  </>
 ) : (
   <button
-    className="admin-login-btn"
-    onClick={handleAdminLogin}
-  >
-    Admin Login
-  </button>
+  className="admin-login-btn"
+  onClick={() => setShowAdminLogin(true)}
+>
+  Admin Login
+</button>
 )}
-          <a href="#bookings">Enquiries</a>
+        {isAdmin && (
+  <a href="#bookings">Enquiries</a>
+)}
 
         </div>
 
@@ -453,11 +957,11 @@ const handleBookingSubmit = async (e) => {
           <div className="hero-buttons">
 
             <a
-              href="#events"
-              className="hero-main-button"
-            >
-              Explore Events
-            </a>
+  href="#services"
+  className="hero-main-button"
+>
+  View Our Services
+</a>
 
             <a
               href="#contact"
@@ -500,515 +1004,785 @@ const handleBookingSubmit = async (e) => {
     id="dashboard"
     className="dashboard-section"
   >
-    
-    
 
-        <div className="section-heading">
+    {/* =========================
+        DASHBOARD HEADER
+        ========================= */}
 
-          <p>
-            VK EVENTS MANAGEMENT
-          </p>
+    <div className="section-heading">
 
-          <h2>
-            Admin Dashboard
-          </h2>
+      <p>
+        VK EVENTS MANAGEMENT
+      </p>
 
-          <div className="gold-line"></div>
+      <h2>
+        Admin Dashboard
+      </h2>
+
+      <div className="gold-line"></div>
+
+    </div>
+
+
+    {/* =========================
+        WELCOME HEADER
+        ========================= */}
+
+    <div className="dashboard-welcome">
+
+      <div>
+
+        <span className="dashboard-welcome-label">
+          ADMIN CONTROL CENTER
+        </span>
+
+        <h3>
+          Welcome back, Admin 👋
+        </h3>
+
+        <p>
+          Manage enquiries, events and gallery
+          content from one professional dashboard.
+        </p>
+
+      </div>
+
+      <div className="dashboard-status">
+
+        <span className="status-dot"></span>
+
+        System Active
+
+      </div>
+
+    </div>
+
+
+    {/* =========================
+        STATISTICS
+        ========================= */}
+
+    <div className="dashboard-cards">
+
+
+      {/* TOTAL ENQUIRIES */}
+
+      <div className="dashboard-card">
+
+        <div className="dashboard-card-icon">
+          📋
+        </div>
+
+        <div>
+
+          <span>
+            Total Enquiries
+          </span>
+
+          <strong>
+            {totalEnquiries}
+          </strong>
+
+          <small>
+            Customer requests
+          </small>
 
         </div>
 
-        <div className="dashboard-welcome">
+      </div>
+
+
+     {/* CONVOCATION */}
+
+<div className="dashboard-card">
+
+  <div className="dashboard-card-icon">
+    🎓
+  </div>
+
+  <div>
+
+    <span>
+      Convocation
+    </span>
+
+    <strong>
+      {bookings.filter(
+        (booking) =>
+          booking.event_type === "Convocation"
+      ).length}
+    </strong>
+
+    <small>
+      Enquiries
+    </small>
+
+  </div>
+
+</div>
+
+
+{/* INAUGURATION */}
+
+<div className="dashboard-card">
+
+  <div className="dashboard-card-icon">
+    🎊
+  </div>
+
+  <div>
+
+    <span>
+      Inauguration
+    </span>
+
+    <strong>
+      {bookings.filter(
+        (booking) =>
+          booking.event_type === "Inauguration"
+      ).length}
+    </strong>
+
+    <small>
+      Enquiries
+    </small>
+
+  </div>
+
+</div>
+      {/* WEDDING */}
+
+      <div className="dashboard-card">
+
+        <div className="dashboard-card-icon">
+          💍
+        </div>
+
+        <div>
+
+          <span>
+            Wedding
+          </span>
+
+          <strong>
+            {weddingEnquiries}
+          </strong>
+
+          <small>
+            Enquiries
+          </small>
+
+        </div>
+
+      </div>
+
+
+      {/* BIRTHDAY */}
+
+      <div className="dashboard-card">
+
+        <div className="dashboard-card-icon">
+          🎂
+        </div>
+
+        <div>
+
+          <span>
+            Birthday
+          </span>
+
+          <strong>
+            {birthdayEnquiries}
+          </strong>
+
+          <small>
+            Enquiries
+          </small>
+
+        </div>
+
+      </div>
+
+
+      {/* GALLERY */}
+
+      <div className="dashboard-card">
+
+        <div className="dashboard-card-icon">
+          🖼️
+        </div>
+
+        <div>
+
+          <span>
+            Gallery Photos
+          </span>
+
+          <strong>
+            {6 + uploadedGalleryImages.length}
+          </strong>
+
+          <small>
+            Available photos
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    {/* =========================
+        QUICK ACTIONS
+        ========================= */}
+
+    <div className="dashboard-quick-actions">
+
+      <div className="dashboard-panel-header">
+
+        <div>
+
+          <p>
+            QUICK ACTIONS
+          </p>
+
+          <h3>
+            Manage VK EVENTS
+          </h3>
+
+        </div>
+
+      </div>
+
+
+      <div className="quick-action-grid">
+
+        <a
+          href="#events"
+          className="quick-action-card"
+        >
+
+          <span className="quick-action-icon">
+            ➕
+          </span>
 
           <div>
 
-            <h3>
-              Welcome to VK EVENTS
-            </h3>
+            <strong>
+              Manage Events
+            </strong>
 
-            <p>
-              Manage your event enquiries and
-              monitor customer requests from
-              one place.
-            </p>
+            <span>
+              Add or edit events
+            </span>
 
           </div>
 
-          <div className="dashboard-status">
+          <b>
+            →
+          </b>
 
-            <span className="status-dot"></span>
+        </a>
 
-            System Active
 
-          </div>
+        <a
+          href="#gallery"
+          className="quick-action-card"
+        >
 
-        </div>
-
-        <div className="dashboard-cards">
-
-          <div className="dashboard-card">
-
-            <div className="dashboard-card-icon">
-              📋
-            </div>
-
-            <div>
-
-              <span>
-                Total Enquiries
-              </span>
-
-              <strong>
-                {totalEnquiries}
-              </strong>
-
-            </div>
-
-          </div>
-
-          <div className="dashboard-card">
-
-            <div className="dashboard-card-icon">
-              💍
-            </div>
-
-            <div>
-
-              <span>
-                Wedding
-              </span>
-
-              <strong>
-                {weddingEnquiries}
-              </strong>
-
-            </div>
-
-          </div>
-
-          <div className="dashboard-card">
-
-            <div className="dashboard-card-icon">
-              🎂
-            </div>
-
-            <div>
-
-              <span>
-                Birthday
-              </span>
-
-              <strong>
-                {birthdayEnquiries}
-              </strong>
-
-            </div>
-
-          </div>
-
-          <div className="dashboard-card">
-
-            <div className="dashboard-card-icon">
-              🎓
-            </div>
-
-            <div>
-
-              <span>
-                Convocation
-              </span>
-
-              <strong>
-                {convocationEnquiries}
-              </strong>
-
-            </div>
-
-          </div>
-
-          <div className="dashboard-card">
-
-            <div className="dashboard-card-icon">
-              🎊
-            </div>
-
-            <div>
-
-              <span>
-                Inauguration
-              </span>
-
-              <strong>
-                {inaugurationEnquiries}
-              </strong>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        <div className="dashboard-bottom">
-
-          <div className="dashboard-panel">
-
-            <div className="dashboard-panel-header">
-
-              <div>
-
-                <p>
-                  RECENT ACTIVITY
-                </p>
-
-                <h3>
-                  Recent Enquiries
-                </h3>
-
-              </div>
-
-              <a href="#bookings">
-                View All
-              </a>
-
-            </div>
-
-            {bookings.length === 0 ? (
-
-              <div className="dashboard-empty">
-
-                <span>📋</span>
-
-                <p>
-                  No enquiries available yet.
-                </p>
-
-              </div>
-
-            ) : (
-
-              <div className="recent-enquiries">
-
-                {bookings
-                  .slice(-5)
-                  .reverse()
-                  .map((item) => (
-
-                    <div
-                      className="recent-enquiry"
-                      key={item.id}
-                    >
-
-                      <div className="recent-avatar">
-
-                        {item.name
-                          ? item.name
-                              .charAt(0)
-                              .toUpperCase()
-                          : 'C'}
-
-                      </div>
-
-                      <div className="recent-info">
-
-                        <strong>
-                          {item.name}
-                        </strong>
-
-                        <span>
-                          {item.event_type}
-                        </span>
-
-                      </div>
-
-                      <div className="recent-date">
-                        {item.event_date}
-                      </div>
-
-                    </div>
-
-                  ))}
-
-              </div>
-
-            )}
-
-          </div>
-
-          <div className="dashboard-panel">
-
-            <div className="dashboard-panel-header">
-
-              <div>
-
-                <p>
-                  EVENT CATEGORIES
-                </p>
-
-                <h3>
-                  Enquiry Overview
-                </h3>
-
-              </div>
-
-            </div>
-
-            <div className="category-row">
-
-              <span>
-                Wedding
-              </span>
-
-              <strong>
-                {weddingEnquiries}
-              </strong>
-
-            </div>
-
-            <div className="category-row">
-
-              <span>
-                Birthday Party
-              </span>
-
-              <strong>
-                {birthdayEnquiries}
-              </strong>
-
-            </div>
-
-            <div className="category-row">
-
-              <span>
-                Convocation
-              </span>
-
-              <strong>
-                {convocationEnquiries}
-              </strong>
-
-            </div>
-
-            <div className="category-row">
-
-              <span>
-                Inauguration
-              </span>
-
-              <strong>
-                {inaugurationEnquiries}
-              </strong>
-
-            </div>
-
-            <div className="category-row">
-
-              <span>
-                Other Events
-              </span>
-
-              <strong>
-
-                {bookings.filter(
-                  (item) =>
-                    item.event_type !==
-                      'Wedding' &&
-                    item.event_type !==
-                      'Birthday Party' &&
-                    item.event_type !==
-                      'Convocation' &&
-                    item.event_type !==
-                      'Inauguration'
-                ).length}
-
-              </strong>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* =========================
-            UPCOMING EVENTS
-            ========================= */}
-
-        <div className="upcoming-events-panel">
-
-          <div className="dashboard-panel-header">
-
-            <div>
-
-              <p>
-                EVENT SCHEDULE
-              </p>
-
-              <h3>
-                Upcoming Events
-              </h3>
-
-            </div>
-
-          </div>
-
-          <div className="upcoming-events-list">
-
-         {eventsLoading ? (
-  <p className="contact-intro">
-    Loading upcoming events...
-  </p>
-) : events.length === 0 ? (
-  <p className="contact-intro">
-    No upcoming events found.
-  </p>
-) : (
-  events.map((event) => {
-    const eventDate = new Date(event.date)
-
-    return (
-      <div
-        className="upcoming-event"
-        key={event.id}
-      >
-        <div className="upcoming-event-date">
-          <span>
-            {eventDate.getDate()}
+          <span className="quick-action-icon">
+            🖼️
           </span>
 
-          <small>
-            {eventDate
-              .toLocaleString('en-US', {
-                month: 'short'
-              })
-              .toUpperCase()}
-          </small>
-        </div>
+          <div>
 
-        <div className="upcoming-event-info">
-          <h4>{event.name}</h4>
+            <strong>
+              Gallery
+            </strong>
 
-          <p>
-            📍 {event.location}
-          </p>
-        </div>
-
-        <span className="upcoming-event-type">
-          {event.event_type}
-        </span>
-      </div>
-    )
-  })
-)}
+            <span>
+              Upload event photos
+            </span>
 
           </div>
 
-        </div>
+          <b>
+            →
+          </b>
 
-      </section>
-      )}
+        </a>
+
+
+        <a
+          href="#bookings"
+          className="quick-action-card"
+        >
+
+          <span className="quick-action-icon">
+            📋
+          </span>
+
+          <div>
+
+            <strong>
+              View Enquiries
+            </strong>
+
+            <span>
+              Check customer requests
+            </span>
+
+          </div>
+
+          <b>
+            →
+          </b>
+
+        </a>
+
+
+        <button
+          type="button"
+          className="quick-action-card"
+          onClick={() => setShowChangePassword(true)}
+        >
+
+          <span className="quick-action-icon">
+            🔐
+          </span>
+
+          <div>
+
+            <strong>
+              Security
+            </strong>
+
+            <span>
+              Change admin password
+            </span>
+
+          </div>
+
+          <b>
+            →
+          </b>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    {/* =========================
+        MAIN DASHBOARD CONTENT
+        ========================= */}
+
+    <div className="dashboard-bottom">
+
 
       {/* =========================
-          EVENTS
+          RECENT ENQUIRIES
           ========================= */}
 
-      <section
-        id="events"
-        className="events-section"
-      >
+      <div className="dashboard-panel">
 
-        <div className="section-heading">
+        <div className="dashboard-panel-header">
 
-          <p>
-            CELEBRATE WITH US
-          </p>
+          <div>
 
-          <h2>
-            Upcoming Events
-          </h2>
+            <p>
+              RECENT ACTIVITY
+            </p>
 
-          <div className="gold-line"></div>
+            <h3>
+              Recent Enquiries
+            </h3>
+
+          </div>
+
+          <a href="#bookings">
+            View All →
+          </a>
 
         </div>
-        <div className="event-cards">
 
-          {eventsLoading ? (
 
-            <p className="contact-intro">
-              Loading events...
+        {bookings.length === 0 ? (
+
+          <div className="dashboard-empty">
+
+            <span>
+              📋
+            </span>
+
+            <p>
+              No enquiries available yet.
             </p>
 
-          ) : events.length === 0 ? (
+          </div>
 
-            <p className="contact-intro">
-              No upcoming events available.
-            </p>
+        ) : (
 
-          ) : (
+          <div className="recent-enquiries">
 
-            events.map((event) => {
-
-              const eventDate = new Date(event.date)
-
-              return (
+            {bookings
+              .slice(-5)
+              .reverse()
+              .map((item) => (
 
                 <div
-                  className="event-card"
-                  key={event.id}
+                  className="recent-enquiry"
+                  key={item.id}
                 >
 
-                  <img
-                    src={
-                      event.event_type === 'Wedding'
-                        ? wedding
-                        : event.event_type === 'Birthday Party'
-                        ? birthday
-                        : event.event_type === 'Convocation'
-                        ? convocation
-                        : event.event_type === 'Inauguration'
-                        ? inauguration
-                        : eventImage
-                    }
-                    alt={event.event_type}
-                    className="event-image"
-                  />
+                  <div className="recent-avatar">
 
-                  <div className="event-card-content">
+                    {item.name
+                      ? item.name
+                          .charAt(0)
+                          .toUpperCase()
+                      : 'C'}
 
-                    <h3>
-                      {event.name}
-                    </h3>
+                  </div>
 
-                    <p>
-                      📅{' '}
-                      {eventDate.toLocaleDateString(
-                        'en-GB',
-                        {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric'
-                        }
-                      )}
-                    </p>
 
-                    <p>
-                      📍 {event.location}
-                    </p>
+                  <div className="recent-info">
 
-                    <p>
-                      🏷️ {event.event_type}
-                    </p>
+                    <strong>
+                      {item.name}
+                    </strong>
+
+                    <span>
+                      {item.event_type}
+                    </span>
+
+                  </div>
+
+
+                  <div className="recent-date">
+
+                    {item.event_date
+                      ? new Date(
+                          item.event_date
+                        ).toLocaleDateString(
+                          "en-IN",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          }
+                        )
+                      : "-"}
 
                   </div>
 
                 </div>
 
-              )
+              ))}
 
-            })
+          </div>
 
-          )}
+        )}
+
+      </div>
+
+
+      {/* =========================
+          ENQUIRY OVERVIEW
+          ========================= */}
+
+      <div className="dashboard-panel">
+
+        <div className="dashboard-panel-header">
+
+          <div>
+
+            <p>
+              EVENT CATEGORIES
+            </p>
+
+            <h3>
+              Enquiry Overview
+            </h3>
+
+          </div>
 
         </div>
 
-      </section>
+
+        {/* WEDDING */}
+
+        <div className="category-row">
+
+          <div>
+
+            <span>
+              💍 Wedding
+            </span>
+
+          </div>
+
+          <strong>
+            {weddingEnquiries}
+          </strong>
+
+        </div>
+
+
+        {/* BIRTHDAY */}
+
+        <div className="category-row">
+
+          <div>
+
+            <span>
+              🎂 Birthday Party
+            </span>
+
+          </div>
+
+          <strong>
+            {birthdayEnquiries}
+          </strong>
+
+        </div>
+
+
+        {/* CONVOCATION */}
+
+        <div className="category-row">
+
+          <div>
+
+            <span>
+              🎓 Convocation
+            </span>
+
+          </div>
+
+          <strong>
+            {convocationEnquiries}
+          </strong>
+
+        </div>
+
+
+        {/* INAUGURATION */}
+
+        <div className="category-row">
+
+          <div>
+
+            <span>
+              🎊 Inauguration
+            </span>
+
+          </div>
+
+          <strong>
+            {inaugurationEnquiries}
+          </strong>
+
+        </div>
+
+
+        {/* OTHER */}
+
+        <div className="category-row">
+
+          <div>
+
+            <span>
+              ✨ Other Events
+            </span>
+
+          </div>
+
+          <strong>
+
+            {bookings.filter(
+              (item) =>
+                item.event_type !== 'Wedding' &&
+                item.event_type !== 'Birthday Party' &&
+                item.event_type !== 'Convocation' &&
+                item.event_type !== 'Inauguration'
+            ).length}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+
+  </section>
+)}
+      
+
+      {/* =========================
+          GALLERY MANAGEMENT
+          ========================= */}
+
+      {isAdmin && (
+        <section
+          id="gallery-management"
+          className="gallery-management-section"
+        >
+
+          <div className="section-heading">
+
+            <p>
+              VK EVENTS MANAGEMENT
+            </p>
+
+            <h2>
+              Gallery Management
+            </h2>
+
+            <div className="gold-line"></div>
+
+          </div>
+<div className="gallery-management-card">
+
+  <h3>
+    Upload Event Photos
+  </h3>
+
+  <form
+    className="gallery-upload-form"
+    onSubmit={handleGalleryUpload}
+  >
+
+    <input
+      type="text"
+      placeholder="Photo Title"
+      value={galleryTitle}
+      onChange={(e) =>
+        setGalleryTitle(e.target.value)
+      }
+    />
+
+    <select
+      value={galleryCategory}
+      onChange={(e) =>
+        setGalleryCategory(e.target.value)
+      }
+    >
+
+      <option value="">
+        Select Event Category
+      </option>
+
+      <option value="Wedding">
+        Wedding
+      </option>
+
+      <option value="Birthday Party">
+        Birthday Party
+      </option>
+
+      <option value="Convocation">
+        Convocation
+      </option>
+
+      <option value="Inauguration">
+        Inauguration
+      </option>
+
+      <option value="Reception">
+        Reception
+      </option>
+
+      <option value="Corporate Event">
+        Corporate Event
+      </option>
+
+    </select>
+
+    <input
+      type="file"
+      accept="image/*"
+      onChange={(e) =>
+        setGalleryFile(e.target.files[0])
+      }
+    />
+
+    <button
+      type="submit"
+      className="add-event-button"
+      disabled={galleryUploading}
+    >
+      {galleryUploading
+        ? 'Uploading...'
+        : '+ Upload Photo'}
+    </button>
+
+    </form>
+
+  {/* UPLOADED GALLERY PHOTOS */}
+
+  <div className="uploaded-gallery-list">
+
+    {uploadedGalleryImages.length === 0 ? (
+
+      <p className="contact-intro">
+        No uploaded photos yet.
+      </p>
+
+    ) : (
+
+      uploadedGalleryImages.map((item) => (
+
+        <div
+          className="uploaded-gallery-item"
+          key={item.id}
+        >
+
+          <img
+            src={item.image}
+            alt={item.title}
+            className="uploaded-gallery-thumbnail"
+          />
+
+          <div className="uploaded-gallery-info">
+
+            <h4>
+              {item.title}
+            </h4>
+
+            <span>
+              {item.category}
+            </span>
+
+          </div>
+
+          <button
+            type="button"
+            className="delete-gallery-button"
+            onClick={() =>
+              handleDeleteGallery(item.id)
+            }
+          >
+            Delete
+          </button>
+
+        </div>
+
+      ))
+
+    )}
+
+  </div>
+
+</div>
+        </section>
+      )}
 
      {/* =========================
     SERVICES
@@ -1462,9 +2236,6 @@ const handleBookingSubmit = async (e) => {
 
       </section>
 
-      {/* =========================
-          GALLERY
-          ========================= */}
         {/* =========================
     OUR EXPERTISE
     ========================= */}
@@ -1680,7 +2451,155 @@ const handleBookingSubmit = async (e) => {
         )}
 
       </section>
+       {/* =========================
+    OUR CREATIVE FOUNDER
+    ========================= */}
 
+<section
+  id="founder"
+  className="founder-section"
+>
+
+  <div className="section-heading">
+
+    <p>
+      THE VISION BEHIND VK EVENTS
+    </p>
+
+    <h2>
+      Our Creative Founder
+    </h2>
+
+    <div className="gold-line"></div>
+
+  </div>
+
+
+  <div className="founder-container">
+
+    {/* Founder Image */}
+
+    <div className="founder-image-wrapper">
+
+      <div className="founder-image-frame">
+
+        <img
+          src={vishalFounder}
+          alt="Vishal Chouksey - Founder of VK Events"
+          className="founder-image"
+        />
+
+      </div>
+
+      <div className="founder-image-accent"></div>
+
+    </div>
+
+
+    {/* Founder Information */}
+
+    <div className="founder-content">
+
+      <p className="founder-label">
+        FOUNDER & CREATIVE DIRECTOR
+      </p>
+
+      <h3>
+        VISHAL CHOUKSEY
+      </h3>
+
+      <div className="founder-small-line"></div>
+      <a
+  href="https://www.instagram.com/vishal_chouksey06/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="instagram-link"
+>
+  Instagram— @vishal_chouksey06
+</a>
+
+      <p className="founder-intro">
+        Behind every unforgettable celebration is a
+        vision, a passion and a commitment to creating
+        something truly special.
+      </p>
+
+      <p className="founder-description">
+        Vishal Chouksey is the creative force behind
+        VK EVENTS, bringing together creativity,
+        thoughtful planning and attention to detail
+        to transform special occasions into memorable
+        experiences.
+      </p>
+
+      <p className="founder-description">
+        His vision is simple — every event should feel
+        personal, elegant and unforgettable. From
+        intimate celebrations to grand occasions,
+        VK EVENTS is built around creating experiences
+        that people remember for years to come.
+      </p>
+
+
+      <div className="founder-highlights">
+
+        <div className="founder-highlight">
+
+          <strong>
+            ✦
+          </strong>
+
+          <span>
+            Creative Vision
+          </span>
+
+        </div>
+
+        <div className="founder-highlight">
+
+          <strong>
+            ✦
+          </strong>
+
+          <span>
+            Elegant Experiences
+          </span>
+
+        </div>
+
+        <div className="founder-highlight">
+
+          <strong>
+            ✦
+          </strong>
+
+          <span>
+            Personal Touch
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div className="founder-quote">
+
+        <span>
+          “
+        </span>
+
+        <p>
+          We don't just organize events.
+          We create moments worth remembering.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
       {/* =========================
           ABOUT
           ========================= */}
@@ -1920,7 +2839,8 @@ const handleBookingSubmit = async (e) => {
           CUSTOMER ENQUIRIES
           ========================= */}
 
-     <section id="bookings" className="bookings-section">
+    {isAdmin && (
+  <section id="bookings" className="bookings-section">
 
   <div className="section-heading">
     <p>VK EVENTS MANAGEMENT</p>
@@ -1938,6 +2858,8 @@ const handleBookingSubmit = async (e) => {
 </button>
     </div>
 
+  <div className="enquiry-filters">
+
   <div className="enquiry-search">
     <input
       type="text"
@@ -1946,6 +2868,21 @@ const handleBookingSubmit = async (e) => {
       onChange={(e) => setSearchTerm(e.target.value)}
     />
   </div>
+
+  <select
+    value={eventFilter}
+    onChange={(e) => setEventFilter(e.target.value)}
+    className="event-filter-select"
+  >
+    <option value="All">All Events</option>
+    <option value="Wedding">Wedding</option>
+    <option value="Birthday Party">Birthday Party</option>
+    <option value="Convocation">Convocation</option>
+    <option value="Inauguration">Inauguration</option>
+    <option value="Other Events">Other Events</option>
+  </select>
+
+</div>
 
   <div className="enquiries-header">
 
@@ -2010,12 +2947,17 @@ const handleBookingSubmit = async (e) => {
   .filter((item) => {
     const search = searchTerm.toLowerCase()
 
-    return (
+    const matchesSearch =
       item.name?.toLowerCase().includes(search) ||
       item.phone?.toLowerCase().includes(search) ||
       item.event_type?.toLowerCase().includes(search) ||
       item.location?.toLowerCase().includes(search)
-    )
+
+    const matchesEvent =
+      eventFilter === 'All' ||
+      item.event_type === eventFilter
+
+    return matchesSearch && matchesEvent
   })
   .map((item) => (
 
@@ -2101,6 +3043,7 @@ const handleBookingSubmit = async (e) => {
   )}
 
 </section>
+)}
 {selectedBooking && (
   <div
     className="booking-modal-overlay"
@@ -2201,6 +3144,14 @@ const handleBookingSubmit = async (e) => {
               Making Your Special Moments
               Unforgettable.
             </p>
+            <a
+  href="https://www.instagram.com/vk_events_services/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="instagram-link"
+>
+  Instagram— @vk_events_services
+</a>
 
           </div>
 
@@ -2214,7 +3165,125 @@ const handleBookingSubmit = async (e) => {
         </p>
 
       </footer>
+{showChangePassword && (
+  <div
+    className="change-password-overlay"
+    onClick={() => setShowChangePassword(false)}
+  >
+    <div
+      className="change-password-modal"
+      onClick={(e) => e.stopPropagation()}
+    >
 
+      <button
+        type="button"
+        className="change-password-close"
+        onClick={() => setShowChangePassword(false)}
+      >
+        ×
+      </button>
+
+      <p className="modal-label">
+        ADMIN SECURITY
+      </p>
+
+      <h2>Change Password</h2>
+
+      <div className="gold-line"></div>
+
+      <input
+        type="password"
+        placeholder="Current Password"
+        value={currentPassword}
+        onChange={(e) =>
+          setCurrentPassword(e.target.value)
+        }
+      />
+
+      <input
+        type="password"
+        placeholder="New Password"
+        value={newPassword}
+        onChange={(e) =>
+          setNewPassword(e.target.value)
+        }
+      />
+
+      <input
+        type="password"
+        placeholder="Confirm New Password"
+        value={confirmPassword}
+        onChange={(e) =>
+          setConfirmPassword(e.target.value)
+        }
+      />
+
+      <button
+        type="button"
+        className="change-password-submit"
+        onClick={handleChangePassword}
+      >
+        Change Password
+      </button>
+
+    </div>
+  </div>
+)}
+{showAdminLogin && (
+  <div
+    className="change-password-overlay"
+    onClick={() => setShowAdminLogin(false)}
+  >
+    <div
+      className="change-password-modal"
+      onClick={(e) => e.stopPropagation()}
+    >
+
+      <button
+        type="button"
+        className="change-password-close"
+        onClick={() => setShowAdminLogin(false)}
+      >
+        ×
+      </button>
+
+      <p className="modal-label">
+        VK EVENTS MANAGEMENT
+      </p>
+
+      <h2>Admin Login</h2>
+
+      <div className="gold-line"></div>
+
+      <input
+        type="text"
+        placeholder="Username"
+        value={adminUsername}
+        onChange={(e) =>
+          setAdminUsername(e.target.value)
+        }
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        value={adminPassword}
+        onChange={(e) =>
+          setAdminPassword(e.target.value)
+        }
+      />
+
+      <button
+        type="button"
+        className="change-password-submit"
+        onClick={handleAdminLogin}
+      >
+        Login
+      </button>
+
+    </div>
+  </div>
+)}
     </>
   )
 }
