@@ -10,7 +10,7 @@ import eventImage from './assets/gallery/event.jpg'
 import wedding from './assets/gallery/wedding.jpg'
 import vishalFounder from './assets/vishal-founder.jpeg'
 
-const API_URL = "http://localhost:5000"
+const API_URL = "https://vk-events.onrender.com";
 function App() {
   const [booking, setBooking] = useState({
     name: '',
@@ -248,7 +248,7 @@ const handleGalleryUpload = async (e) => {
   }
 }
 const handleAdminLogin = async () => {
-
+  console.log("LOGIN BUTTON CLICKED");
   if (!adminUsername || !adminPassword) {
     alert("Please enter username and password.")
     return
