@@ -3,9 +3,15 @@ const cors = require("cors");
 const mysql = require("mysql2");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 require('dotenv').config();
 
 const app = express();
+const uploadDir = path.join(__dirname, "uploads");
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 // =========================
 // GALLERY UPLOAD SETUP
 // =========================
