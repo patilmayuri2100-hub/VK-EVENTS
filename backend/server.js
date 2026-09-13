@@ -59,8 +59,6 @@ db.connect(function (err) {
 
   console.log("MySQL connected successfully!");
 });
-
-
 // =========================
 // HOME
 // =========================
@@ -68,7 +66,6 @@ db.connect(function (err) {
 app.get("/", function (req, res) {
   res.send("VK EVENTS Backend is running!");
 });
-
 
 // =========================
 // ADD BOOKING
@@ -96,7 +93,6 @@ app.post("/api/bookings", function (req, res) {
       message: "Please fill all required booking fields."
     });
   }
-
   const sql = `
     INSERT INTO bookings
     (name, phone, event_type, event_date, location, guests, message)
@@ -794,5 +790,4 @@ app.listen(PORT, function () {
   console.log(
     `VK EVENTS Backend running on port ${PORT}`
   );
-
 });
