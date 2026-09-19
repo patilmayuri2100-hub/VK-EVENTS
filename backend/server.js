@@ -4,10 +4,16 @@ const mysql = require("mysql2");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+
 require('dotenv').config();
 
 const app = express();
 const uploadDir = path.join(__dirname, "uploads");
+const videoUploadDir = path.join(__dirname, "uploads", "videos");
+
+if (!fs.existsSync(videoUploadDir)) {
+  fs.mkdirSync(videoUploadDir, { recursive: true });
+}
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -36,7 +42,34 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage
 });
+const videoStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, videoUploadDir);
+  },
 
+  filename: function (req, file, cb) {
+    const uniqueName =
+      Date.now() +
+      "-" +
+      file.originalname.replace(/\s+/g, "-");
+
+    cb(null, uniqueName);
+  }
+});
+
+const videoUpload = multer({
+  storage: videoStorage,
+  limits: {
+    fileSize: 500 * 1024 * 1024
+  },
+  fileFilter: function (req, file, cb) {
+    if (file.mimetype.startsWith("video/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only video files are allowed."));
+    }
+  }
+});
 app.use(cors());
 app.use(express.json());
 app.use(
@@ -48,7 +81,10 @@ const db = mysql.createConnection({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT
+  port: process.env.DB_PORT,
+  ssl: {
+    minVersion: "TLSv1.2"
+  }
 });
 
 db.connect(function (err) {
@@ -59,6 +95,8 @@ db.connect(function (err) {
 
   console.log("MySQL connected successfully!");
 });
+
+
 // =========================
 // HOME
 // =========================
@@ -490,7 +528,195 @@ app.post(
         success: false,
         message: "Please provide title, category and image."
       });
+// =========================
+// VIDEO UPLOAD
+// =========================
 
+app.post(
+  "/api/videos",
+  videoUpload.single("video"),
+  function (req, res) {
+
+    console.log("VIDEO UPLOAD REQUEST RECEIVED");
+
+    const title = req.body.title;
+    const category = req.body.category;
+
+    if (!title || !category || !req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide title, category and video."
+      });
+    }
+
+    const video = "/uploads/videos/" + req.file.filename;
+
+    const sql = `
+      INSERT INTO videos
+      (title, category, video)
+      VALUES (?, ?, ?)
+    `;
+
+    db.query(
+      sql,
+      [title, category, video],
+      function (err, result) {
+
+        if (err) {
+          console.log(
+            "Video upload database error:",
+            err.message
+          );
+
+          return res.status(500).json({
+            success: false,
+            message: "Failed to save event video."
+          });
+        }
+
+        console.log(
+          "Event video uploaded:",
+          result.insertId
+        );
+
+        res.json({
+          success: true,
+          message: "Event video uploaded successfully!",
+          id: result.insertId,
+          video: video
+        });
+
+      }
+    );
+
+  }
+);
+// =========================
+// GET EVENT VIDEOS
+// =========================
+
+app.get("/api/videos", function (req, res) {
+
+  console.log("GET VIDEOS REQUEST RECEIVED");
+
+  const sql = `
+    SELECT id, title, category, video
+    FROM videos
+    ORDER BY id DESC
+  `;
+
+  db.query(sql, function (err, results) {
+
+    if (err) {
+      console.log(
+        "Videos database error:",
+        err.message
+      );
+
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch event videos."
+      });
+    }
+
+    res.json({
+      success: true,
+      videos: results
+    });
+
+  });
+
+});
+// =========================
+// DELETE EVENT VIDEO
+// =========================
+
+app.delete("/api/videos/:id", function (req, res) {
+
+  const videoId = req.params.id;
+
+  console.log(
+    "DELETE VIDEO REQUEST RECEIVED:",
+    videoId
+  );
+
+  const sql = `
+    SELECT video
+    FROM videos
+    WHERE id = ?
+  `;
+
+  db.query(sql, [videoId], function (err, results) {
+
+    if (err) {
+      console.log(
+        "Find video database error:",
+        err.message
+      );
+
+      return res.status(500).json({
+        success: false,
+        message: "Failed to find event video."
+      });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Event video not found."
+      });
+    }
+
+    const videoPath = path.join(
+      __dirname,
+      results[0].video
+    );
+
+    const deleteSql = `
+      DELETE FROM videos
+      WHERE id = ?
+    `;
+
+    db.query(deleteSql, [videoId], function (deleteErr, result) {
+
+      if (deleteErr) {
+        console.log(
+          "Delete video database error:",
+          deleteErr.message
+        );
+
+        return res.status(500).json({
+          success: false,
+          message: "Failed to delete event video."
+        });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Event video not found."
+        });
+      }
+
+      if (fs.existsSync(videoPath)) {
+        fs.unlinkSync(videoPath);
+      }
+
+      console.log(
+        "Event video deleted:",
+        videoId
+      );
+
+      res.json({
+        success: true,
+        message: "Event video deleted successfully!"
+      });
+
+    });
+
+  });
+
+});
     }
 
     const image = "/uploads/" + req.file.filename;
