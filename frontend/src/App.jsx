@@ -50,6 +50,11 @@ const [galleryCategory, setGalleryCategory] = useState('')
 const [galleryFile, setGalleryFile] = useState(null)
 const [galleryUploading, setGalleryUploading] = useState(false)
 const [uploadedGalleryImages, setUploadedGalleryImages] = useState([])
+const [videoTitle, setVideoTitle] = useState('')
+const [videoCategory, setVideoCategory] = useState('')
+const [videoFile, setVideoFile] = useState(null)
+const [videoUploading, setVideoUploading] = useState(false)
+const [uploadedVideos, setUploadedVideos] = useState([])
 
 const handleEventChange = (e) => {
   const { name, value } = e.target
@@ -140,6 +145,25 @@ const fetchGalleryImages = async () => {
 
   }
 
+}
+const fetchVideos = async () => {
+  try {
+    const response = await fetch(`${API_URL}/api/videos`)
+    const data = await response.json()
+
+    if (data.success) {
+      const formattedVideos = data.videos.map((item) => ({
+        id: item.id,
+        video: `${API_URL}${item.video}`,
+        title: item.title,
+        category: item.category
+      }))
+
+      setUploadedVideos(formattedVideos)
+    }
+  } catch (error) {
+    console.error('Videos fetch error:', error)
+  }
 }
 const handleDeleteGallery = async (id) => {
 
@@ -245,6 +269,50 @@ const handleGalleryUpload = async (e) => {
 
   } finally {
     setGalleryUploading(false)
+  }
+}
+const handleVideoUpload = async (e) => {
+  e.preventDefault()
+
+  if (!videoTitle || !videoCategory || !videoFile) {
+    alert('Please enter a title, select a category and choose a video.')
+    return
+  }
+
+  const formData = new FormData()
+
+  formData.append('title', videoTitle)
+  formData.append('category', videoCategory)
+  formData.append('video', videoFile)
+
+  try {
+    setVideoUploading(true)
+
+    const response = await fetch(`${API_URL}/api/videos`, {
+      method: 'POST',
+      body: formData
+    })
+
+    const data = await response.json()
+
+    if (!response.ok || !data.success) {
+      alert(data.message || 'Failed to upload event video.')
+      return
+    }
+
+    alert('Event video uploaded successfully!')
+
+    setVideoTitle('')
+    setVideoCategory('')
+    setVideoFile(null)
+
+    fetchVideos()
+
+  } catch (error) {
+    console.error('Video upload error:', error)
+    alert('Unable to connect to VK EVENTS server.')
+  } finally {
+    setVideoUploading(false)
   }
 }
 const handleAdminLogin = async () => {
@@ -485,6 +553,7 @@ const handleChangePassword = async () => {
 }, [])
 useEffect(() => {
   fetchGalleryImages()
+   fetchVideos()
 }, [])
 useEffect(() => {
   if (isAdmin) {
@@ -1653,7 +1722,46 @@ const galleryImages = [
   <h3>
     Upload Event Photos
   </h3>
+<div className="gallery-management-card">
+  <h3>Upload Event Videos</h3>
 
+  <form onSubmit={handleVideoUpload}>
+
+    <input
+      type="text"
+      placeholder="Video Title"
+      value={videoTitle}
+      onChange={(e) => setVideoTitle(e.target.value)}
+    />
+
+    <select
+      value={videoCategory}
+      onChange={(e) => setVideoCategory(e.target.value)}
+    >
+      <option value="">Select Category</option>
+      <option value="Wedding">Wedding</option>
+      <option value="Birthday Party">Birthday Party</option>
+      <option value="Convocation">Convocation</option>
+      <option value="Inauguration">Inauguration</option>
+      <option value="Reception">Reception</option>
+      <option value="Corporate Event">Corporate Event</option>
+    </select>
+
+    <input
+      type="file"
+      accept="video/*"
+      onChange={(e) => setVideoFile(e.target.files[0])}
+    />
+
+    <button
+      type="submit"
+      disabled={videoUploading}
+    >
+      {videoUploading ? 'Uploading Video...' : '+ Upload Event Video'}
+    </button>
+
+  </form>
+</div>
   <form
     className="gallery-upload-form"
     onSubmit={handleGalleryUpload}
