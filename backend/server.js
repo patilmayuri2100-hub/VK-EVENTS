@@ -597,7 +597,7 @@ app.post(
 
 app.get("/api/videos", function (req, res) {
 
-  console.log("GET VIDEOS REQUEST RECEIVED");
+  console.log("GET VIDEOS REQUEST RECEIVED-TEST");
 
   const sql = `
     SELECT id, title, category, video
