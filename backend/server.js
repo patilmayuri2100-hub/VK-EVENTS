@@ -16,11 +16,14 @@ require('dotenv').config();
 const app = express();
 const uploadDir = path.join(__dirname, "uploads");
 const videoUploadDir = path.join(__dirname, "uploads", "videos");
+const galleryUploadDir = path.join(__dirname, "uploads", "gallery");
 
 if (!fs.existsSync(videoUploadDir)) {
   fs.mkdirSync(videoUploadDir, { recursive: true });
 }
-
+if (!fs.existsSync(galleryUploadDir)) {
+  fs.mkdirSync(galleryUploadDir, { recursive: true });
+}
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -31,7 +34,7 @@ if (!fs.existsSync(uploadDir)) {
 const storage = multer.diskStorage({
 
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, "uploads/gallery/");
   },
 
   filename: function (req, file, cb) {

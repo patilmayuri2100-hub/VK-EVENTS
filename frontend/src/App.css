@@ -7671,3 +7671,766 @@ body {
     grid-template-columns: 1fr;
   }
 }
+/* =========================================================
+   VK EVENTS — PROFESSIONAL VIDEO MANAGEMENT
+   ========================================================= */
+
+#video-management {
+  padding: 100px 8%;
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(212, 175, 55, 0.08),
+      transparent 38%
+    ),
+    #090909;
+}
+
+#video-management .section-heading {
+  margin-bottom: 45px;
+}
+
+#video-management .gallery-management-card {
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 42px;
+  background: linear-gradient(145deg, #181818, #0d0d0d);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 12px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+}
+
+#video-management .gallery-management-card h3 {
+  color: #f5f5f5;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 27px;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+#video-management .gallery-upload-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+#video-management .gallery-upload-form input,
+#video-management .gallery-upload-form select {
+  width: 100%;
+  padding: 16px 17px;
+  background: #0b0b0b;
+  color: #f5f5f5;
+  border: 1px solid #303030;
+  border-radius: 5px;
+  outline: none;
+  font-size: 14px;
+}
+
+#video-management .gallery-upload-form input::placeholder {
+  color: #777;
+}
+
+#video-management .gallery-upload-form input:focus,
+#video-management .gallery-upload-form select:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
+}
+
+#video-management .gallery-upload-form input:last-of-type {
+  grid-column: 1 / -1;
+}
+
+#video-management .gallery-upload-form button {
+  grid-column: 1 / -1;
+  justify-self: center;
+  min-width: 190px;
+  padding: 15px 30px;
+  border: 1px solid #d4af37;
+  border-radius: 5px;
+  background: #d4af37;
+  color: #090909;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#video-management .gallery-upload-form button:hover {
+  background: #e5c45b;
+  border-color: #e5c45b;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(212, 175, 55, 0.18);
+}
+
+#video-management .uploaded-videos-list {
+  margin-top: 45px;
+}
+
+#video-management .uploaded-video-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 22px;
+  margin-bottom: 14px;
+  background: #101010;
+  border: 1px solid rgba(212, 175, 55, 0.14);
+  border-radius: 7px;
+}
+
+#video-management .uploaded-video-item:hover {
+  border-color: rgba(212, 175, 55, 0.45);
+}
+
+#video-management .uploaded-video-info h4 {
+  color: #f5f5f5;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  margin-bottom: 7px;
+}
+
+#video-management .uploaded-video-info span {
+  color: #d4af37;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+}
+
+#video-management .delete-video-button {
+  padding: 10px 17px;
+  background: transparent;
+  color: #d4af37;
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+#video-management .delete-video-button:hover {
+  background: #d4af37;
+  color: #090909;
+}
+
+@media (max-width: 650px) {
+  #video-management {
+    padding: 75px 5%;
+  }
+
+  #video-management .gallery-management-card {
+    padding: 28px 20px;
+  }
+
+  #video-management .gallery-upload-form {
+    grid-template-columns: 1fr;
+  }
+
+  #video-management .gallery-upload-form input:last-of-type,
+  #video-management .gallery-upload-form button {
+    grid-column: auto;
+  }
+
+  #video-management .uploaded-video-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #video-management .delete-video-button {
+    width: 100%;
+  }
+}
+/* =========================================================
+   VK EVENTS — PREMIUM DIRECTOR SECTION
+   ========================================================= */
+
+#founder {
+  background:
+    radial-gradient(
+      circle at 15% 50%,
+      rgba(212, 175, 55, 0.09),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 85% 20%,
+      rgba(255, 255, 255, 0.025),
+      transparent 25%
+    ),
+    #080808;
+}
+
+#founder .section-heading h2 {
+  letter-spacing: 1px;
+}
+
+#founder .founder-container {
+  position: relative;
+}
+
+#founder .founder-image-wrapper {
+  filter: drop-shadow(0 25px 45px rgba(0, 0, 0, 0.5));
+}
+
+#founder .founder-image-frame {
+  border-radius: 3px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+#founder .founder-image-frame:hover {
+  border-color: rgba(212, 175, 55, 0.8);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.6),
+    0 0 45px rgba(212, 175, 55, 0.12);
+}
+
+#founder .founder-image-accent {
+  border-radius: 3px;
+  opacity: 0.7;
+}
+
+#founder .founder-label {
+  display: inline-block;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+#founder .founder-content h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: 2px;
+}
+
+#founder .founder-intro {
+  color: #d4af37;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+}
+
+#founder .founder-content p {
+  max-width: 680px;
+}
+
+#founder .founder-quote {
+  position: relative;
+  margin: 35px 0;
+  padding: 22px 28px;
+  border-left: 2px solid #d4af37;
+  background: rgba(212, 175, 55, 0.035);
+  color: #e5e5e5;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+#founder .founder-signature {
+  color: #d4af37;
+  font-family: "Brush Script MT", cursive;
+  font-size: 28px;
+  margin-top: 20px;
+}
+
+#founder .founder-content a {
+  color: #d4af37;
+  transition: all 0.3s ease;
+}
+
+#founder .founder-content a:hover {
+  color: #fff;
+  transform: translateX(3px);
+}
+
+@media (max-width: 850px) {
+  #founder .founder-content {
+    text-align: center;
+  }
+
+  #founder .founder-small-line {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #founder .founder-quote {
+    text-align: left;
+  }
+}
+
+@media (max-width: 500px) {
+  #founder {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  #founder .founder-image {
+    height: 390px;
+  }
+
+  #founder .founder-content h3 {
+    font-size: 32px;
+  }
+
+  #founder .founder-quote {
+    padding: 18px 20px;
+    font-size: 16px;
+  }
+}
+/* =========================================================
+   FINAL FIX — EVENT VIDEOS LAYOUT
+   ========================================================= */
+
+.gallery-video-section {
+  max-width: 1200px !important;
+  margin: 70px auto 0 !important;
+  padding: 50px 20px 90px !important;
+
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 24px !important;
+}
+
+.gallery-video-section > h2 {
+  grid-column: 1 / -1 !important;
+  margin: 0 0 15px !important;
+  text-align: center !important;
+  color: #d4af37 !important;
+  font-size: 34px !important;
+}
+
+.gallery-video-card {
+  min-width: 0 !important;
+  min-height: 260px !important;
+  padding: 30px 24px !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: linear-gradient(145deg, #171717, #0d0d0d) !important;
+  border: 1px solid rgba(212, 175, 55, 0.28) !important;
+  border-radius: 10px !important;
+
+  text-align: center !important;
+  box-sizing: border-box !important;
+
+  transition: all 0.3s ease !important;
+}
+
+.gallery-video-card:hover {
+  transform: translateY(-6px) !important;
+  border-color: #d4af37 !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45) !important;
+}
+
+.gallery-video-card h3 {
+  margin: 0 0 12px !important;
+  color: #f5f5f5 !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 22px !important;
+  line-height: 1.3 !important;
+}
+
+.gallery-video-card p {
+  margin: 0 0 25px !important;
+  color: #d4af37 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+}
+
+.gallery-video-card a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 13px 24px !important;
+
+  background: #d4af37 !important;
+  color: #0b0b0b !important;
+
+  border: 1px solid #d4af37 !important;
+  border-radius: 4px !important;
+
+  text-decoration: none !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+
+  transition: all 0.3s ease !important;
+}
+
+.gallery-video-card a:hover {
+  background: transparent !important;
+  color: #d4af37 !important;
+}
+
+@media (max-width: 900px) {
+  .gallery-video-section {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .gallery-video-section {
+    grid-template-columns: 1fr !important;
+    padding: 40px 5% 70px !important;
+  }
+
+  .gallery-video-section > h2 {
+    font-size: 28px !important;
+  }
+
+  .gallery-video-card {
+    min-height: 230px !important;
+  }
+}
+/* DIRECTOR SECTION - FINAL */
+
+#founder .founder-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 40px !important;
+  max-width: 900px !important;
+  margin: 50px auto 0 !important;
+}
+
+#founder .founder-image-wrapper {
+  width: 400px !important;
+  max-width: 90% !important;
+  margin: 0 auto !important;
+}
+
+#founder .founder-image-frame {
+  width: 100% !important;
+}
+
+#founder .founder-image {
+  width: 100% !important;
+  height: 450px !important;
+  min-height: 0 !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+}
+
+#founder .founder-content {
+  width: 100% !important;
+  max-width: 850px !important;
+  text-align: center !important;
+}
+
+#founder .founder-label,
+#founder .founder-content h3,
+#founder .founder-intro,
+#founder .founder-description,
+#founder .founder-approach-title,
+#founder .founder-approach-item,
+#founder .founder-quote,
+#founder .founder-signature {
+  text-align: center !important;
+}
+
+#founder .founder-small-line {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+#founder .founder-approach {
+  text-align: center !important;
+}
+
+#founder .founder-quote {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#founder .founder-signature {
+  align-items: center !important;
+}
+
+#founder .founder-social-links {
+  justify-content: center !important;
+}
+
+#founder .founder-cta {
+  display: block !important;
+  margin: 20px auto !important;
+}
+
+@media (max-width: 600px) {
+  #founder .founder-image {
+    height: 400px !important;
+  }
+
+  #founder .founder-image-wrapper {
+    width: 340px !important;
+  }
+
+  #founder .founder-content {
+    padding: 0 15px !important;
+  }
+}
+/* =========================================
+   VK EVENTS - FINAL DIRECTOR DESIGN
+   ========================================= */
+
+#founder .founder-container {
+  width: 100% !important;
+  max-width: 1000px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 38px !important;
+}
+
+#founder .founder-image-wrapper {
+  width: 450px !important;
+  max-width: 90% !important;
+  height: auto !important;
+  margin: 0 auto !important;
+  display: block !important;
+}
+
+#founder .founder-image-frame {
+  width: 100% !important;
+  height: auto !important;
+  overflow: hidden !important;
+}
+
+#founder .founder-image {
+  display: block !important;
+  width: 100% !important;
+  height: 500px !important;
+  min-height: 0 !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+}
+
+#founder .founder-image-accent {
+  margin: 16px auto 0 !important;
+}
+
+#founder .founder-content {
+  width: 100% !important;
+  max-width: 900px !important;
+  padding: 0 !important;
+  text-align: center !important;
+  font-family: inherit !important;
+}
+
+#founder .founder-label {
+  text-align: center !important;
+  font-family: inherit !important;
+}
+
+#founder .founder-content h3 {
+  text-align: center !important;
+  font-family: inherit !important;
+}
+
+#founder .founder-small-line {
+  margin: 16px auto 18px !important;
+}
+
+#founder .founder-intro {
+  text-align: center !important;
+  font-family: inherit !important;
+}
+
+#founder .founder-description {
+  text-align: center !important;
+  font-family: inherit !important;
+}
+
+#founder .founder-approach {
+  width: 100% !important;
+  margin-top: 35px !important;
+}
+
+#founder .founder-approach h4 {
+  text-align: center !important;
+  font-family: inherit !important;
+  margin-bottom: 22px !important;
+}
+
+#founder .founder-approach-item {
+  min-height: 110px !important;
+  padding: 22px 20px !important;
+  margin-bottom: 14px !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border: 1px solid rgba(212, 175, 55, 0.35) !important;
+  border-radius: 10px !important;
+  background: linear-gradient(145deg, #171717, #0d0d0d) !important;
+
+  box-sizing: border-box !important;
+}
+
+#founder .founder-approach-item strong {
+  text-align: center !important;
+  font-family: inherit !important;
+  margin-bottom: 8px !important;
+}
+
+#founder .founder-approach-item p {
+  text-align: center !important;
+  font-family: inherit !important;
+  max-width: 650px !important;
+}
+
+#founder .founder-quote {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  justify-content: center !important;
+  text-align: center !important;
+
+  border: 1px solid rgba(212, 175, 55, 0.35) !important;
+  border-radius: 10px !important;
+  padding: 20px !important;
+}
+
+#founder .founder-quote p {
+  text-align: center !important;
+  font-family: inherit !important;
+}
+
+#founder .founder-signature {
+  align-items: center !important;
+  text-align: center !important;
+}
+
+#founder .founder-signature strong,
+#founder .founder-signature span {
+  font-family: inherit !important;
+  text-align: center !important;
+}
+
+#founder .founder-social-links {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 25px !important;
+  flex-wrap: wrap !important;
+}
+
+#founder .founder-instagram {
+  text-align: center !important;
+  font-family: inherit !important;
+}
+
+#founder .founder-cta {
+  display: block !important;
+  margin: 20px auto 0 !important;
+  font-family: inherit !important;
+}
+
+@media (min-width: 850px) {
+  #founder .founder-approach {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+
+  #founder .founder-approach h4 {
+    grid-column: 1 / -1 !important;
+  }
+
+  #founder .founder-approach-item {
+    margin-bottom: 0 !important;
+  }
+}
+
+@media (max-width: 600px) {
+  #founder .founder-image-wrapper {
+    width: 360px !important;
+  }
+
+  #founder .founder-image {
+    height: 420px !important;
+  }
+
+  #founder .founder-container {
+    gap: 30px !important;
+  }
+
+  #founder .founder-approach {
+    display: block !important;
+  }
+
+  #founder .founder-approach-item {
+    margin-bottom: 12px !important;
+  }
+
+  #founder .founder-social-links {
+    flex-direction: column !important;
+  }
+}
+/* CENTER ONLY DIRECTOR CONTENT */
+
+#founder .founder-content {
+  text-align: center !important;
+}
+
+#founder .founder-content h3 {
+  text-align: center !important;
+}
+
+#founder .founder-intro {
+  text-align: center !important;
+}
+
+#founder .founder-description {
+  text-align: center !important;
+}
+/* FINAL CENTERING - DIRECTOR CONTENT */
+
+#founder .founder-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 900px !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+}
+
+#founder .founder-label {
+  width: 100% !important;
+  text-align: center !important;
+}
+
+#founder .founder-content h3 {
+  width: 100% !important;
+  text-align: center !important;
+}
+
+#founder .founder-intro {
+  width: 100% !important;
+  text-align: center !important;
+}
+
+#founder .founder-description {
+  width: 100% !important;
+  text-align: center !important;
+}
+
+#founder .founder-approach-title {
+  width: 100% !important;
+  text-align: center !important;
+}
+
+#founder .founder-approach {
+  width: 100% !important;
+}
+
+#founder .founder-approach-item {
+  text-align: center !important;
+}
+
+#founder .founder-approach-item strong,
+#founder .founder-approach-item p {
+  text-align: center !important;
+}
