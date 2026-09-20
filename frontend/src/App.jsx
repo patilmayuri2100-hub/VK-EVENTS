@@ -10,7 +10,7 @@ import eventImage from './assets/gallery/event.jpg'
 import wedding from './assets/gallery/wedding.jpg'
 import vishalFounder from './assets/vishal-founder.jpeg'
 
-const API_URL = "https://vk-events.onrender.com";
+const API_URL =  "http://localhost:5000";
 function App() {
   const [booking, setBooking] = useState({
     name: '',
@@ -154,7 +154,7 @@ const fetchVideos = async () => {
     if (data.success) {
       const formattedVideos = data.videos.map((item) => ({
         id: item.id,
-        video: `${API_URL}${item.video}`,
+        video: item.video,
         title: item.title,
         category: item.category
       }))
@@ -209,6 +209,59 @@ const handleDeleteGallery = async (id) => {
 
     console.error(
       'Gallery delete error:',
+      error
+    )
+
+    alert(
+      'Unable to connect to VK EVENTS server.'
+    )
+
+  }
+
+}
+const handleDeleteVideo = async (id) => {
+
+  const confirmDelete = window.confirm(
+    'Are you sure you want to delete this event video?'
+  )
+
+  if (!confirmDelete) {
+    return
+  }
+
+  try {
+
+    const response = await fetch(
+      `${API_URL}/api/videos/${id}`,
+      {
+        method: 'DELETE'
+      }
+    )
+
+    const data = await response.json()
+
+    if (!response.ok || !data.success) {
+
+      alert(
+        data.message ||
+        'Failed to delete event video.'
+      )
+
+      return
+    }
+
+    alert('Event video deleted successfully!')
+
+    setUploadedVideos((previousVideos) =>
+      previousVideos.filter(
+        (video) => video.id !== id
+      )
+    )
+
+  } catch (error) {
+
+    console.error(
+      'Video delete error:',
       error
     )
 
@@ -275,41 +328,42 @@ const handleVideoUpload = async (e) => {
   e.preventDefault()
 
   if (!videoTitle || !videoCategory || !videoFile) {
-    alert('Please enter a title, select a category and choose a video.')
+    alert('Please enter a title, select a category and paste a video link.')
     return
   }
-
-  const formData = new FormData()
-
-  formData.append('title', videoTitle)
-  formData.append('category', videoCategory)
-  formData.append('video', videoFile)
 
   try {
     setVideoUploading(true)
 
     const response = await fetch(`${API_URL}/api/videos`, {
       method: 'POST',
-      body: formData
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: videoTitle,
+        category: videoCategory,
+        video: videoFile
+      })
     })
 
     const data = await response.json()
 
     if (!response.ok || !data.success) {
-      alert(data.message || 'Failed to upload event video.')
+      alert(data.message || 'Failed to add event video.')
       return
     }
 
-    alert('Event video uploaded successfully!')
+    alert('Event video added successfully!')
 
     setVideoTitle('')
     setVideoCategory('')
-    setVideoFile(null)
+    setVideoFile('')
 
     fetchVideos()
 
   } catch (error) {
-    console.error('Video upload error:', error)
+    console.error('Video link error:', error)
     alert('Unable to connect to VK EVENTS server.')
   } finally {
     setVideoUploading(false)
@@ -997,121 +1051,750 @@ const galleryImages = [
           HERO
           ========================= */}
 
-      <section
-        id="home"
-        className="hero-section"
+<section
+  id="home"
+  className="hero-section"
+>
+  <div className="hero-content">
+
+    <p className="hero-small-title">
+      VK EVENTS & SERVICES
+    </p>
+
+    <h1>
+      VK Events & Services
+    </h1>
+
+    <div className="hero-line"></div>
+
+    <p className="hero-description">
+      Wedding Planning | Event Management | Corporate Events | Social Celebrations
+       <p>LET US HANDLE THE MAGIC, WHILE YOU ENJOY THE SPOTLIGHT.</p>
+    </p>
+
+    <div className="hero-buttons">
+
+      <a
+        href="#booking"
+        className="hero-main-button"
+      >
+        GET A QUOTE
+      </a>
+
+      <a
+        href="https://wa.me/919424455947"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hero-outline-button"
+      >
+        WHATSAPP US
+      </a>
+
+    </div>
+
+  </div>
+
+  <div className="hero-decoration-circle">
+
+    <div className="circle-ring"></div>
+
+    <div className="hero-center-logo">
+      <span>VK</span>
+    </div>
+
+    <p className="circle-text">
+      EVENTS • SERVICES • CELEBRATIONS
+    </p>
+
+  </div>
+
+</section>
+{/* =========================
+    SERVICES
+    ========================= */}
+
+<section id="services" className="services-section">
+
+  <div className="section-heading">
+    <p>WHAT WE DO</p>
+    <h2>Our Services</h2>
+    <div className="gold-line"></div>
+  </div>
+
+  <p className="contact-intro">
+    Complete event solutions designed to make your special occasions memorable.
+  </p>
+
+  <div className="service-cards">
+
+    <div className="service-card">
+      <span>01</span>
+      <h3>Wedding Events</h3>
+      <p>
+        Complete wedding planning, decoration and coordination for your special day.
+      </p>
+    </div>
+
+    <div className="service-card">
+      <span>02</span>
+      <h3>Wedding Functions</h3>
+      <p>
+        Beautifully planned receptions, engagements, mehendi and other wedding functions.
+      </p>
+    </div>
+
+    <div className="service-card">
+      <span>03</span>
+      <h3>Birthday Parties</h3>
+      <p>
+        Creative themes, decoration and complete arrangements for memorable birthdays.
+      </p>
+    </div>
+
+    <div className="service-card">
+      <span>04</span>
+      <h3>Convocation</h3>
+      <p>
+        Professional planning and management for memorable academic celebrations.
+      </p>
+    </div>
+
+    <div className="service-card">
+      <span>05</span>
+      <h3>Inauguration</h3>
+      <p>
+        Elegant inauguration events with professional planning and smooth execution.
+      </p>
+    </div>
+
+    <div className="service-card">
+      <span>06</span>
+      <h3>Special Events</h3>
+      <p>
+        Customized event solutions created according to your requirements.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+
+{/* =========================
+    HOW WE WORK
+    ========================= */}
+
+<section id="process" className="process-section">
+
+  <div className="section-heading">
+    <p>OUR PROCESS</p>
+    <h2>How We Work</h2>
+    <div className="gold-line"></div>
+  </div>
+
+  <p className="contact-intro">
+    From the first conversation to the final celebration, we carefully manage every stage of your event.
+  </p>
+
+  <div className="process-cards">
+
+    <div className="process-card">
+      <span className="process-number">01</span>
+      <div className="process-icon">💡</div>
+      <h3>Understanding Your Vision</h3>
+      <p>
+        We listen carefully to your ideas, requirements and expectations.
+      </p>
+    </div>
+
+    <div className="process-card">
+      <span className="process-number">02</span>
+      <div className="process-icon">📋</div>
+      <h3>Detailed Planning & Coordination</h3>
+      <p>
+        We create a detailed plan covering timelines, vendors and logistics.
+      </p>
+    </div>
+
+    <div className="process-card">
+      <span className="process-number">03</span>
+      <div className="process-icon">✨</div>
+      <h3>Creative Execution</h3>
+      <p>
+        We bring your ideas to life through creative design and professional execution.
+      </p>
+    </div>
+
+    <div className="process-card">
+      <span className="process-number">04</span>
+      <div className="process-icon">🎯</div>
+      <h3>On-Site Management & Support</h3>
+      <p>
+        Our team coordinates everything on-site and ensures the event runs smoothly.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+
+{/* =========================
+    WHY US
+    ========================= */}
+
+<section id="why" className="why-section">
+
+  <div className="section-heading">
+    <p>WHY CHOOSE US</p>
+    <h2>Why VK EVENTS?</h2>
+    <div className="gold-line"></div>
+  </div>
+
+  <div className="why-cards">
+
+    <div className="why-card">
+      <span className="why-number">01</span>
+      <h3>Creative & Elegant Planning</h3>
+      <p>
+        Creative concepts and elegant details for memorable events.
+      </p>
+    </div>
+
+    <div className="why-card">
+      <span className="why-number">02</span>
+      <h3>Complete Event Management</h3>
+      <p>
+        We manage planning, decoration and execution.
+      </p>
+    </div>
+
+    <div className="why-card">
+      <span className="why-number">03</span>
+      <h3>Customized Celebrations</h3>
+      <p>
+        Services tailored to your requirements and vision.
+      </p>
+    </div>
+
+    <div className="why-card">
+      <span className="why-number">04</span>
+      <h3>Trusted & Dedicated Service</h3>
+      <p>
+        Professional service and smooth coordination.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+
+{/* =========================
+    OUR EXPERTISE
+    ========================= */}
+
+<section id="expertise" className="expertise-section">
+
+  <div className="section-heading">
+    <p>OUR EXPERTISE</p>
+    <h2>Everything You Need for a Perfect Event</h2>
+    <div className="gold-line"></div>
+  </div>
+
+  <p className="contact-intro">
+    We bring together creativity, planning and professional coordination to make every celebration memorable.
+  </p>
+
+  <div className="expertise-grid">
+
+    <div className="expertise-item">
+      <span>01</span>
+      <h3>Event Planning</h3>
+      <p>Complete planning and coordination tailored to your event.</p>
+    </div>
+
+    <div className="expertise-item">
+      <span>02</span>
+      <h3>Venue Management</h3>
+      <p>Professional venue preparation and smooth event-day coordination.</p>
+    </div>
+
+    <div className="expertise-item">
+      <span>03</span>
+      <h3>Creative Design</h3>
+      <p>Elegant themes, decoration and creative event concepts.</p>
+    </div>
+
+    <div className="expertise-item">
+      <span>04</span>
+      <h3>Guest Experience</h3>
+      <p>Thoughtful arrangements focused on guest comfort and experience.</p>
+    </div>
+
+    <div className="expertise-item">
+      <span>05</span>
+      <h3>Entertainment</h3>
+      <p>Artists, entertainment and activities suited to your celebration.</p>
+    </div>
+
+    <div className="expertise-item">
+      <span>06</span>
+      <h3>Event Support</h3>
+      <p>Dedicated on-site support from setup through completion.</p>
+    </div>
+
+  </div>
+
+</section>
+{/* =========================
+    GALLERY
+    ========================= */}
+
+<section id="gallery" className="gallery-section">
+
+  <div className="section-heading">
+    <p>OUR WORK</p>
+    <h2>Event Gallery</h2>
+    <div className="gold-line"></div>
+  </div>
+
+  <div className="gallery-grid">
+
+    {galleryImages.map((item, index) => (
+      <div
+        className="gallery-item"
+        key={index}
+        onClick={() => setSelectedGalleryIndex(index)}
+      >
+        <img src={item.image} alt={item.title} />
+
+        <div className="gallery-overlay">
+          <span>{item.category}</span>
+        </div>
+      </div>
+    ))}
+
+  </div>
+{uploadedVideos.length > 0 && (
+  <div className="gallery-video-section">
+
+    <h2>Event Videos</h2>
+
+    {uploadedVideos.map((item) => (
+      <div
+        className="gallery-video-card"
+        key={item.id}
       >
 
-        <div className="hero-content">
+        <h3>{item.title}</h3>
 
-          <p className="hero-small-title">
-            VK EVENTS & SERVICES
+        <p>{item.category}</p>
+
+        <a
+          href={item.video}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ▶ Watch Video
+        </a>
+
+      </div>
+    ))}
+
+  </div>
+)}
+  {selectedGalleryIndex !== null && (
+    <div
+      className="gallery-lightbox"
+      onClick={() => setSelectedGalleryIndex(null)}
+    >
+
+      <div
+        className="lightbox-content"
+        onClick={(e) => e.stopPropagation()}
+      >
+
+        <button
+          type="button"
+          className="lightbox-close"
+          onClick={() => setSelectedGalleryIndex(null)}
+        >
+          ×
+        </button>
+
+        <img
+          src={galleryImages[selectedGalleryIndex].image}
+          alt={galleryImages[selectedGalleryIndex].title}
+          className="lightbox-image"
+        />
+
+        <div className="lightbox-info">
+
+          <p>
+            {galleryImages[selectedGalleryIndex].category}
           </p>
 
-          <h1>
-            Let us handle 
-            <span> the Magic while you </span>
-            enjoy the Spotlight!!
-          </h1>
+          <h2>
+            {galleryImages[selectedGalleryIndex].title}
+          </h2>
 
-          <div className="hero-line"></div>
-
-          <p className="hero-description">
-            From beautiful weddings and birthday
-            celebrations to memorable convocations
-            and grand inaugurations, we create
-            elegant and unforgettable experiences.
-          </p>
-
-          <div className="hero-buttons">
-
-            <a
-  href="#services"
-  className="hero-main-button"
->
-  View Our Services
-</a>
-
-            <a
-              href="#contact"
-              className="hero-outline-button"
-            >
-              Book Your Event
-            </a>
-
-          </div>
-
-        </div>
-
-        <div className="hero-decoration-circle">
-
-          <div className="circle-ring"></div>
-
-          <div className="hero-center-logo">
-
-            <img
-              src={logo}
-              alt="VK Events"
-            />
-
-          </div>
-
-          <span className="circle-text">
-            CELEBRATE • CREATE • MEMORABLE •
+          <span>
+            {selectedGalleryIndex + 1} / {galleryImages.length}
           </span>
 
         </div>
 
-      </section>
+      </div>
 
-      {/* =========================
-          DASHBOARD
-          ========================= */}
+    </div>
+  )}
 
-     {isAdmin && (
+</section>
+{/* =========================
+    MEET THE DIRECTOR
+    ========================= */}
+
+<section
+  id="founder"
+  className="founder-section"
+>
+
+  <div className="section-heading">
+
+    <p>
+      MEET THE DIRECTOR
+    </p>
+
+    <h2>
+      BEHIND EVERY SUCCESSFUL EVENT
+    </h2>
+
+    <div className="gold-line"></div>
+
+  </div>
+
+
+  <div className="founder-container">
+
+    <div className="founder-image-wrapper">
+
+      <div className="founder-image-frame">
+
+        <img
+          src={vishalFounder}
+          alt="Vishal Chouksey - Director of VK Events"
+          className="founder-image"
+        />
+
+      </div>
+
+      <div className="founder-image-accent"></div>
+
+    </div>
+
+
+    <div className="founder-content">
+
+      <p className="founder-label">
+        DIRECTOR | VK EVENTS & SERVICES
+      </p>
+
+      <h3>
+        VISHAL CHOUKSEY
+      </h3>
+
+      <div className="founder-small-line"></div>
+
+
+      <p className="founder-intro">
+        THERE'S EXPERIENCE YOU CAN TRUST.
+      </p>
+
+
+      <p className="founder-description">
+        With experience across <strong>400+ events</strong>, I've had
+        the opportunity to be part of celebrations of all kinds,
+        from intimate family functions to large-scale events.
+      </p>
+
+
+      <h4 className="founder-approach-title">
+        MY EXPERIENCE
+      </h4>
+
+      <p className="founder-description">
+        Every event has taught me something new — about people,
+        planning, creativity and the importance of getting
+        every detail right.
+      </p>
+
+
+      <h4 className="founder-approach-title">
+        MY APPROACH
+      </h4>
+
+
+      <div className="founder-approach">
+
+        <div className="founder-approach-item">
+
+          <strong>
+            LISTEN FIRST
+          </strong>
+
+          <p>
+            Every event starts with understanding what you actually want.
+          </p>
+
+        </div>
+
+
+        <div className="founder-approach-item">
+
+          <strong>
+            PLAN SMART
+          </strong>
+
+          <p>
+            A good event looks effortless because the planning behind it isn't.
+          </p>
+
+        </div>
+
+
+        <div className="founder-approach-item">
+
+          <strong>
+            EXECUTE WITH PRECISION
+          </strong>
+
+          <p>
+            On the event day, every detail matters.
+          </p>
+
+        </div>
+
+
+        <div className="founder-approach-item">
+
+          <strong>
+            BE THERE
+          </strong>
+
+          <p>
+            When something unexpected happens, our team is there to handle it.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div className="founder-quote">
+
+        <span>
+          “
+        </span>
+
+        <p>
+          Don't worry, VK Events is handling it.
+        </p>
+
+      </div>
+
+
+      <div className="founder-signature">
+
+        <strong>
+          VISHAL CHOUKSEY
+        </strong>
+
+        <span>
+          Director, VK Events & Services
+        </span>
+
+      </div>
+<div className="founder-social-links">
+
+  <a
+    href="https://www.instagram.com/vk_events_services/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="founder-instagram"
+  >
+    <span>VK EVENTS</span>
+    @vk_events_services
+  </a>
+
+  <a
+    href="https://www.instagram.com/vishal_chouksey06/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="founder-instagram"
+  >
+    <span>DIRECTOR</span>
+    @vishal_chouksey06
+  </a>
+
+</div>
+      <button
+        type="button"
+        className="founder-cta"
+        onClick={() => {
+          document
+            .getElementById("booking")
+            ?.scrollIntoView({ behavior: "smooth" });
+        }}
+      >
+        LET'S DISCUSS YOUR EVENT
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+{/* =========================
+    ABOUT
+    ========================= */}
+
+<section
+  id="about"
+  className="about-section"
+>
+
+  <div className="about-content">
+
+    <div className="about-badge">
+      VK
+    </div>
+
+    <div>
+
+      <div className="section-heading left-heading">
+
+        <p>WHO WE ARE</p>
+
+        <h2>About VK EVENTS</h2>
+
+        <div className="gold-line"></div>
+
+      </div>
+
+
+      <p className="about-text">
+
+        Welcome to VK EVENTS & SERVICES,
+        where creativity meets precision.
+        We are a dynamic event management
+        company dedicated to crafting
+        unforgettable experiences for
+        every occasion.
+
+        <br />
+        <br />
+
+        Whether it is a dream wedding,
+        a corporate event, a birthday
+        celebration, a convocation ceremony,
+        or a grand inauguration, we bring
+        your vision to life through creativity,
+        innovation, and meticulous planning.
+
+        <br />
+        <br />
+
+        From concept to flawless execution,
+        our team ensures that every event
+        becomes a memorable experience
+        while you enjoy every special moment.
+
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+{/* =========================
+    CONTACT
+    ========================= */}
+
+<section id="contact" className="contact-section">
+
+  <div className="section-heading">
+
+    <p>GET IN TOUCH</p>
+
+    <h2>Contact VK EVENTS</h2>
+
+    <div className="gold-line"></div>
+
+  </div>
+
+  <p className="contact-intro">
+    Have an event in mind? Get in touch with our team and let's make it memorable.
+  </p>
+
+  <div className="contact-info">
+
+    <div className="contact-item">
+      <span>📞</span>
+      <div>
+        <strong>Call Us</strong>
+        <p>9424455947</p>
+      </div>
+    </div>
+
+    <div className="contact-item">
+      <span>💬</span>
+      <div>
+        <strong>WhatsApp</strong>
+        <p>Available for enquiries</p>
+      </div>
+    </div>
+
+    <div className="contact-item">
+      <span>📸</span>
+      <div>
+        <strong>Instagram</strong>
+        <p>@vk_events_services</p>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+{/* =========================
+    ADMIN DASHBOARD
+    ========================= */}
+
+{isAdmin && (
   <section
     id="dashboard"
     className="dashboard-section"
   >
 
-    {/* =========================
-        DASHBOARD HEADER
-        ========================= */}
-
     <div className="section-heading">
 
-      <p>
-        VK EVENTS MANAGEMENT
-      </p>
+      <p>VK EVENTS MANAGEMENT</p>
 
-      <h2>
-        Admin Dashboard
-      </h2>
+      <h2>Admin Dashboard</h2>
 
       <div className="gold-line"></div>
 
     </div>
 
-
-    {/* =========================
-        WELCOME HEADER
-        ========================= */}
-
     <div className="dashboard-welcome">
 
       <div>
 
-        <span className="dashboard-welcome-label">
-          ADMIN CONTROL CENTER
-        </span>
-
-        <h3>
-          Welcome back, Admin 👋
-        </h3>
+        <h3>Welcome to VK EVENTS</h3>
 
         <p>
-          Manage enquiries, events and gallery
-          content from one professional dashboard.
+          Manage your event enquiries and monitor
+          customer requests from one place.
         </p>
 
       </div>
@@ -1126,15 +1809,7 @@ const galleryImages = [
 
     </div>
 
-
-    {/* =========================
-        STATISTICS
-        ========================= */}
-
     <div className="dashboard-cards">
-
-
-      {/* TOTAL ENQUIRIES */}
 
       <div className="dashboard-card">
 
@@ -1143,83 +1818,14 @@ const galleryImages = [
         </div>
 
         <div>
-
-          <span>
-            Total Enquiries
-          </span>
+          <span>Total Enquiries</span>
 
           <strong>
             {totalEnquiries}
           </strong>
-
-          <small>
-            Customer requests
-          </small>
-
         </div>
 
       </div>
-
-
-     {/* CONVOCATION */}
-
-<div className="dashboard-card">
-
-  <div className="dashboard-card-icon">
-    🎓
-  </div>
-
-  <div>
-
-    <span>
-      Convocation
-    </span>
-
-    <strong>
-      {bookings.filter(
-        (booking) =>
-          booking.event_type === "Convocation"
-      ).length}
-    </strong>
-
-    <small>
-      Enquiries
-    </small>
-
-  </div>
-
-</div>
-
-
-{/* INAUGURATION */}
-
-<div className="dashboard-card">
-
-  <div className="dashboard-card-icon">
-    🎊
-  </div>
-
-  <div>
-
-    <span>
-      Inauguration
-    </span>
-
-    <strong>
-      {bookings.filter(
-        (booking) =>
-          booking.event_type === "Inauguration"
-      ).length}
-    </strong>
-
-    <small>
-      Enquiries
-    </small>
-
-  </div>
-
-</div>
-      {/* WEDDING */}
 
       <div className="dashboard-card">
 
@@ -1228,567 +1834,414 @@ const galleryImages = [
         </div>
 
         <div>
-
-          <span>
-            Wedding
-          </span>
+          <span>Total Events</span>
 
           <strong>
-            {weddingEnquiries}
+            {events.length}
           </strong>
-
-          <small>
-            Enquiries
-          </small>
-
-        </div>
-
-      </div>
-
-
-      {/* BIRTHDAY */}
-
-      <div className="dashboard-card">
-
-        <div className="dashboard-card-icon">
-          🎂
-        </div>
-
-        <div>
-
-          <span>
-            Birthday
-          </span>
-
-          <strong>
-            {birthdayEnquiries}
-          </strong>
-
-          <small>
-            Enquiries
-          </small>
-
-        </div>
-
-      </div>
-
-
-      {/* GALLERY */}
-
-      <div className="dashboard-card">
-
-        <div className="dashboard-card-icon">
-          🖼️
-        </div>
-
-        <div>
-
-          <span>
-            Gallery Photos
-          </span>
-
-          <strong>
-            {6 + uploadedGalleryImages.length}
-          </strong>
-
-          <small>
-            Available photos
-          </small>
-
         </div>
 
       </div>
 
     </div>
 
+  </section>
+)}
+{/* =========================
+    GALLERY MANAGEMENT
+    ========================= */}
 
-    {/* =========================
-        QUICK ACTIONS
-        ========================= */}
+{isAdmin && (
+  <section
+    id="gallery-management"
+    className="gallery-management-section"
+  >
 
-    <div className="dashboard-quick-actions">
+    <div className="section-heading">
 
-      <div className="dashboard-panel-header">
+      <p>VK EVENTS MANAGEMENT</p>
 
-        <div>
+      <h2>Gallery Management</h2>
 
-          <p>
-            QUICK ACTIONS
-          </p>
+      <div className="gold-line"></div>
 
-          <h3>
-            Manage VK EVENTS
-          </h3>
+    </div>
 
-        </div>
+    <div className="gallery-management-card">
 
-      </div>
+      <h3>Upload Event Photos</h3>
 
+      <form
+        className="gallery-upload-form"
+        onSubmit={handleGalleryUpload}
+      >
 
-      <div className="quick-action-grid">
+        <input
+          type="text"
+          placeholder="Photo Title"
+          value={galleryTitle}
+          onChange={(e) =>
+            setGalleryTitle(e.target.value)
+          }
+        />
 
-        <a
-          href="#events"
-          className="quick-action-card"
+        <select
+          value={galleryCategory}
+          onChange={(e) =>
+            setGalleryCategory(e.target.value)
+          }
         >
 
-          <span className="quick-action-icon">
-            ➕
-          </span>
+          <option value="">
+            Select Event Category
+          </option>
 
-          <div>
+          <option value="Wedding">
+            Wedding
+          </option>
 
-            <strong>
-              Manage Events
-            </strong>
+          <option value="Birthday Party">
+            Birthday Party
+          </option>
 
-            <span>
-              Add or edit events
-            </span>
+          <option value="Convocation">
+            Convocation
+          </option>
 
-          </div>
+          <option value="Inauguration">
+            Inauguration
+          </option>
 
-          <b>
-            →
-          </b>
+          <option value="Reception">
+            Reception
+          </option>
 
-        </a>
+          <option value="Corporate Event">
+            Corporate Event
+          </option>
 
+        </select>
 
-        <a
-          href="#gallery"
-          className="quick-action-card"
-        >
-
-          <span className="quick-action-icon">
-            🖼️
-          </span>
-
-          <div>
-
-            <strong>
-              Gallery
-            </strong>
-
-            <span>
-              Upload event photos
-            </span>
-
-          </div>
-
-          <b>
-            →
-          </b>
-
-        </a>
-
-
-        <a
-          href="#bookings"
-          className="quick-action-card"
-        >
-
-          <span className="quick-action-icon">
-            📋
-          </span>
-
-          <div>
-
-            <strong>
-              View Enquiries
-            </strong>
-
-            <span>
-              Check customer requests
-            </span>
-
-          </div>
-
-          <b>
-            →
-          </b>
-
-        </a>
-
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) =>
+            setGalleryFile(e.target.files[0])
+          }
+        />
 
         <button
-          type="button"
-          className="quick-action-card"
-          onClick={() => setShowChangePassword(true)}
+          type="submit"
+          className="add-event-button"
+          disabled={galleryUploading}
         >
-
-          <span className="quick-action-icon">
-            🔐
-          </span>
-
-          <div>
-
-            <strong>
-              Security
-            </strong>
-
-            <span>
-              Change admin password
-            </span>
-
-          </div>
-
-          <b>
-            →
-          </b>
-
+          {galleryUploading
+            ? "Uploading..."
+            : "+ Upload Photo"}
         </button>
 
-      </div>
+      </form>
 
-    </div>
+      <div className="uploaded-gallery-list">
 
+        {uploadedGalleryImages.length === 0 ? (
 
-    {/* =========================
-        MAIN DASHBOARD CONTENT
-        ========================= */}
-
-    <div className="dashboard-bottom">
-
-
-      {/* =========================
-          RECENT ENQUIRIES
-          ========================= */}
-
-      <div className="dashboard-panel">
-
-        <div className="dashboard-panel-header">
-
-          <div>
-
-            <p>
-              RECENT ACTIVITY
-            </p>
-
-            <h3>
-              Recent Enquiries
-            </h3>
-
-          </div>
-
-          <a href="#bookings">
-            View All →
-          </a>
-
-        </div>
-
-
-        {bookings.length === 0 ? (
-
-          <div className="dashboard-empty">
-
-            <span>
-              📋
-            </span>
-
-            <p>
-              No enquiries available yet.
-            </p>
-
-          </div>
+          <p className="contact-intro">
+            No uploaded photos yet.
+          </p>
 
         ) : (
 
-          <div className="recent-enquiries">
+          uploadedGalleryImages.map((item) => (
 
-            {bookings
-              .slice(-5)
-              .reverse()
-              .map((item) => (
+            <div
+              className="uploaded-gallery-item"
+              key={item.id}
+            >
 
-                <div
-                  className="recent-enquiry"
-                  key={item.id}
-                >
+              <img
+                src={item.image}
+                alt={item.title}
+                className="uploaded-gallery-thumbnail"
+              />
 
-                  <div className="recent-avatar">
+              <div className="uploaded-gallery-info">
 
-                    {item.name
-                      ? item.name
-                          .charAt(0)
-                          .toUpperCase()
-                      : 'C'}
+                <h4>
+                  {item.title}
+                </h4>
 
-                  </div>
+                <span>
+                  {item.category}
+                </span>
 
+              </div>
 
-                  <div className="recent-info">
+              <button
+                type="button"
+                className="delete-gallery-button"
+                onClick={() =>
+                  handleDeleteGallery(item.id)
+                }
+              >
+                Delete
+              </button>
 
-                    <strong>
-                      {item.name}
-                    </strong>
+            </div>
 
-                    <span>
-                      {item.event_type}
-                    </span>
-
-                  </div>
-
-
-                  <div className="recent-date">
-
-                    {item.event_date
-                      ? new Date(
-                          item.event_date
-                        ).toLocaleDateString(
-                          "en-IN",
-                          {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          }
-                        )
-                      : "-"}
-
-                  </div>
-
-                </div>
-
-              ))}
-
-          </div>
+          ))
 
         )}
 
       </div>
 
+    </div>
 
-      {/* =========================
-          ENQUIRY OVERVIEW
-          ========================= */}
+  </section>
+)}
+{/* =========================
+    VIDEO MANAGEMENT
+    ========================= */}
 
-      <div className="dashboard-panel">
+{isAdmin && (
+  <section
+    id="video-management"
+    className="gallery-management-section"
+  >
 
-        <div className="dashboard-panel-header">
+    <div className="section-heading">
 
-          <div>
+      <p>VK EVENTS MANAGEMENT</p>
 
-            <p>
-              EVENT CATEGORIES
-            </p>
+      <h2>Video Management</h2>
 
-            <h3>
-              Enquiry Overview
-            </h3>
+      <div className="gold-line"></div>
 
-          </div>
+    </div>
 
-        </div>
+    <div className="gallery-management-card">
 
+      <h3>Add Event Video</h3>
 
-        {/* WEDDING */}
+      <form
+        className="gallery-upload-form"
+        onSubmit={handleVideoUpload}
+      >
 
-        <div className="category-row">
+        <input
+          type="text"
+          placeholder="Video Title"
+          value={videoTitle}
+          onChange={(e) =>
+            setVideoTitle(e.target.value)
+          }
+        />
 
-          <div>
+        <select
+          value={videoCategory}
+          onChange={(e) =>
+            setVideoCategory(e.target.value)
+          }
+        >
 
-            <span>
-              💍 Wedding
-            </span>
+          <option value="">
+            Select Event Category
+          </option>
 
-          </div>
+          <option value="Wedding">
+            Wedding
+          </option>
 
-          <strong>
-            {weddingEnquiries}
-          </strong>
+          <option value="Wedding Function">
+            Wedding Function
+          </option>
 
-        </div>
+          <option value="Birthday Party">
+            Birthday Party
+          </option>
 
+          <option value="Convocation">
+            Convocation
+          </option>
 
-        {/* BIRTHDAY */}
+          <option value="Inauguration">
+            Inauguration
+          </option>
 
-        <div className="category-row">
+          <option value="Other Events">
+            Other Events
+          </option>
 
-          <div>
+        </select>
 
-            <span>
-              🎂 Birthday Party
-            </span>
+        <input
+          type="text"
+          placeholder="Paste YouTube / Video Link"
+          value={videoFile || ''}
+          onChange={(e) =>
+            setVideoFile(e.target.value)
+          }
+        />
 
-          </div>
+        <button
+          type="submit"
+          className="add-event-button"
+          disabled={videoUploading}
+        >
+          {videoUploading
+            ? "Adding..."
+            : "+ Add Video"}
+        </button>
 
-          <strong>
-            {birthdayEnquiries}
-          </strong>
+      </form>
 
-        </div>
+      <div className="uploaded-gallery-list">
 
+        {uploadedVideos.length === 0 ? (
 
-        {/* CONVOCATION */}
+          <p className="contact-intro">
+            No videos added yet.
+          </p>
 
-        <div className="category-row">
+        ) : (
 
-          <div>
+          uploadedVideos.map((item) => (
 
-            <span>
-              🎓 Convocation
-            </span>
+            <div
+              className="uploaded-gallery-item"
+              key={item.id}
+            >
 
-          </div>
+              <div className="uploaded-gallery-info">
 
-          <strong>
-            {convocationEnquiries}
-          </strong>
+                <h4>
+                  {item.title}
+                </h4>
 
-        </div>
+                <span>
+                  {item.category}
+                </span>
 
+              <a
+  href={item.video}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  Watch Video
+</a>
+<button
+  type="button"
+  className="delete-gallery-button"
+  onClick={() =>
+    handleDeleteVideo(item.id)
+  }
+>
+  Delete
+</button>
+              </div>
 
-        {/* INAUGURATION */}
+            </div>
 
-        <div className="category-row">
+          ))
 
-          <div>
-
-            <span>
-              🎊 Inauguration
-            </span>
-
-          </div>
-
-          <strong>
-            {inaugurationEnquiries}
-          </strong>
-
-        </div>
-
-
-        {/* OTHER */}
-
-        <div className="category-row">
-
-          <div>
-
-            <span>
-              ✨ Other Events
-            </span>
-
-          </div>
-
-          <strong>
-
-            {bookings.filter(
-              (item) =>
-                item.event_type !== 'Wedding' &&
-                item.event_type !== 'Birthday Party' &&
-                item.event_type !== 'Convocation' &&
-                item.event_type !== 'Inauguration'
-            ).length}
-
-          </strong>
-
-        </div>
+        )}
 
       </div>
 
     </div>
 
-
-
-
   </section>
 )}
-      
+   {/* =========================
+    BOOK YOUR EVENT
+    ========================= */}
 
-      {/* =========================
-          GALLERY MANAGEMENT
-          ========================= */}
+<section id="booking" className="contact-section">
 
-      {isAdmin && (
-        <section
-          id="gallery-management"
-          className="gallery-management-section"
-        >
+  <div className="section-heading">
+    <p>LET'S CREATE SOMETHING SPECIAL</p>
 
-          <div className="section-heading">
+    <h2>Book Your Event</h2>
 
-            <p>
-              VK EVENTS MANAGEMENT
-            </p>
+    <div className="gold-line"></div>
+  </div>
 
-            <h2>
-              Gallery Management
-            </h2>
+  <p className="contact-intro">
+    Tell us about your event and our team will get in touch.
+  </p>
 
-            <div className="gold-line"></div>
-
-          </div>
-<div className="gallery-management-card">
-
-  <h3>
-    Upload Event Photos
-  </h3>
-<div className="gallery-management-card">
-  <h3>Upload Event Videos</h3>
-
-  <form onSubmit={handleVideoUpload}>
-
-    <input
-      type="text"
-      placeholder="Video Title"
-      value={videoTitle}
-      onChange={(e) => setVideoTitle(e.target.value)}
-    />
-
-    <select
-      value={videoCategory}
-      onChange={(e) => setVideoCategory(e.target.value)}
-    >
-      <option value="">Select Category</option>
-      <option value="Wedding">Wedding</option>
-      <option value="Birthday Party">Birthday Party</option>
-      <option value="Convocation">Convocation</option>
-      <option value="Inauguration">Inauguration</option>
-      <option value="Reception">Reception</option>
-      <option value="Corporate Event">Corporate Event</option>
-    </select>
-
-    <input
-      type="file"
-      accept="video/*"
-      onChange={(e) => setVideoFile(e.target.files[0])}
-    />
-
-    <button
-      type="submit"
-      disabled={videoUploading}
-    >
-      {videoUploading ? 'Uploading Video...' : '+ Upload Event Video'}
-    </button>
-
-  </form>
-</div>
   <form
-    className="gallery-upload-form"
-    onSubmit={handleGalleryUpload}
+    className="booking-form"
+    onSubmit={async (e) => {
+      e.preventDefault();
+
+      const form = e.target;
+
+      const data = {
+        name: form.name.value,
+        phone: form.phone.value,
+        event_type: form.event_type.value,
+        event_date: form.event_date.value,
+        message: form.message.value,
+        location: form.location.value,
+        guests: form.guests.value
+      };
+
+      try {
+        const response = await fetch(
+          "https://vk-events.onrender.com/api/bookings",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Booking failed");
+        }
+
+        alert("Your enquiry has been submitted successfully!");
+
+        form.reset();
+
+      } catch (error) {
+        console.error(error);
+        alert("Something went wrong. Please try again.");
+      }
+    }}
   >
 
     <input
       type="text"
-      placeholder="Photo Title"
-      value={galleryTitle}
-      onChange={(e) =>
-        setGalleryTitle(e.target.value)
-      }
+      name="name"
+      placeholder="Your Name *"
+      required
+    />
+
+    <input
+      type="tel"
+      name="phone"
+      placeholder="Phone Number *"
+      required
     />
 
     <select
-      value={galleryCategory}
-      onChange={(e) =>
-        setGalleryCategory(e.target.value)
-      }
+      name="event_type"
+      required
     >
-
       <option value="">
-        Select Event Category
+        Select Event Type *
       </option>
 
       <option value="Wedding">
         Wedding
+      </option>
+
+      <option value="Wedding Function">
+        Wedding Function
       </option>
 
       <option value="Birthday Party">
@@ -1803,1145 +2256,56 @@ const galleryImages = [
         Inauguration
       </option>
 
-      <option value="Reception">
-        Reception
+      <option value="Other Events">
+        Other Events
       </option>
-
-      <option value="Corporate Event">
-        Corporate Event
-      </option>
-
     </select>
 
     <input
-      type="file"
-      accept="image/*"
-      onChange={(e) =>
-        setGalleryFile(e.target.files[0])
-      }
+      type="date"
+      name="event_date"
+      required
     />
 
-    <button
-      type="submit"
-      className="add-event-button"
-      disabled={galleryUploading}
-    >
-      {galleryUploading
-        ? 'Uploading...'
-        : '+ Upload Photo'}
+    <input
+      type="text"
+      name="location"
+      placeholder="Event Location"
+    />
+
+    <input
+      type="number"
+      name="guests"
+      placeholder="Number of Guests"
+      min="1"
+    />
+
+    <textarea
+      name="message"
+      placeholder="Tell us about your event..."
+    ></textarea>
+
+    <button type="submit">
+      SEND ENQUIRY
     </button>
 
-    </form>
+  </form>
 
-  {/* UPLOADED GALLERY PHOTOS */}
+  <div className="contact-info">
 
-  <div className="uploaded-gallery-list">
-
-    {uploadedGalleryImages.length === 0 ? (
-
-      <p className="contact-intro">
-        No uploaded photos yet.
-      </p>
-
-    ) : (
-
-      uploadedGalleryImages.map((item) => (
-
-        <div
-          className="uploaded-gallery-item"
-          key={item.id}
-        >
-
-          <img
-            src={item.image}
-            alt={item.title}
-            className="uploaded-gallery-thumbnail"
-          />
-
-          <div className="uploaded-gallery-info">
-
-            <h4>
-              {item.title}
-            </h4>
-
-            <span>
-              {item.category}
-            </span>
-
-          </div>
-
-          <button
-            type="button"
-            className="delete-gallery-button"
-            onClick={() =>
-              handleDeleteGallery(item.id)
-            }
-          >
-            Delete
-          </button>
-
-        </div>
-
-      ))
-
-    )}
-
-  </div>
-
-</div>
-        </section>
-      )}
-
-     {/* =========================
-    SERVICES
-    ========================= */}
-
-<section
-  id="services"
-  className="services-section"
->
-
-  <div className="section-heading">
-
-    <p>
-      WHAT WE DO
-    </p>
-
-    <h2>
-      Our Services
-    </h2>
-
-    <div className="gold-line"></div>
-
-  </div>
-
-  <p className="contact-intro">
-    From intimate celebrations to large-scale events,
-    VK EVENTS & SERVICES provides complete event
-    management with creativity, precision and
-    professional execution.
-  </p>
-
-  <div className="service-cards">
-
-    <div className="service-card">
-
-      <div className="service-icon">
-        💍
-      </div>
-
-      <h3>
-        Social Events
-      </h3>
-
-      <p>
-        Weddings, birthday celebrations,
-        family functions and other special
-        occasions planned around your vision.
-      </p>
-
+    <div className="contact-item">
+      <span>📞</span>
+      <p>9424455947</p>
     </div>
 
-    <div className="service-card">
-
-      <div className="service-icon">
-        🏢
-      </div>
-
-      <h3>
-        Corporate Events
-      </h3>
-
-      <p>
-        Professional event planning and
-        coordination for corporate gatherings,
-        meetings and special occasions.
-      </p>
-
-    </div>
-
-    <div className="service-card">
-
-      <div className="service-icon">
-        🎤
-      </div>
-
-      <h3>
-        Public Events
-      </h3>
-
-      <p>
-        Organized event solutions for public
-        celebrations and larger gatherings.
-      </p>
-
-    </div>
-
-    <div className="service-card">
-
-      <div className="service-icon">
-        👥
-      </div>
-
-      <h3>
-        Guest Management
-      </h3>
-
-      <p>
-        Smooth guest coordination and
-        professional management throughout
-        your event.
-      </p>
-
-    </div>
-
-    <div className="service-card">
-
-      <div className="service-icon">
-        ✨
-      </div>
-
-      <h3>
-        Decor & Design
-      </h3>
-
-      <p>
-        Creative decoration and event design
-        that transforms your venue into a
-        memorable setting.
-      </p>
-
-    </div>
-
-    <div className="service-card">
-
-      <div className="service-icon">
-        📸
-      </div>
-
-      <h3>
-        Photography & Videography
-      </h3>
-
-      <p>
-        Professional photography and
-        videography to capture your
-        important moments.
-      </p>
-
-    </div>
-
-    <div className="service-card">
-
-      <div className="service-icon">
-        🍽️
-      </div>
-
-      <h3>
-        Catering & Food Services
-      </h3>
-
-      <p>
-        Carefully planned food and catering
-        services for a comfortable and
-        enjoyable guest experience.
-      </p>
-
-    </div>
-
-    <div className="service-card">
-
-      <div className="service-icon">
-        🎧
-      </div>
-
-      <h3>
-        Audio & Visuals
-      </h3>
-
-      <p>
-        Audio-visual arrangements designed
-        to support smooth and engaging
-        event experiences.
-      </p>
-
-    </div>
-
-    <div className="service-card">
-
-      <div className="service-icon">
-        🎭
-      </div>
-
-      <h3>
-        Artists & Entertainers
-      </h3>
-
-      <p>
-        Entertainment and artist coordination
-        to make your celebration lively
-        and memorable.
-      </p>
-
-    </div>
-
-    <div className="service-card">
-
-      <div className="service-icon">
-        🚗
-      </div>
-
-      <h3>
-        Transport & Valet Parking
-      </h3>
-
-      <p>
-        Convenient transportation and
-        parking arrangements for your
-        guests.
-      </p>
-
-    </div>
-
-    <div className="service-card">
-
-      <div className="service-icon">
-        🛡️
-      </div>
-
-      <h3>
-        Security & Safety
-      </h3>
-
-      <p>
-        Professional safety and security
-        arrangements for a smooth event.
-      </p>
-
+    <div className="contact-item">
+      <span>💬</span>
+      <p>WhatsApp Available</p>
     </div>
 
   </div>
 
 </section>
- {/* =========================
-    HOW WE WORK
-    ========================= */}
-
-<section
-  id="process"
-  className="process-section"
->
-
-  <div className="section-heading">
-
-    <p>
-      OUR PROCESS
-    </p>
-
-    <h2>
-      How We Work
-    </h2>
-
-    <div className="gold-line"></div>
-
-  </div>
-
-  <p className="contact-intro">
-    From the first conversation to the final
-    celebration, we carefully manage every
-    stage of your event.
-  </p>
-
-  <div className="process-cards">
-
-    <div className="process-card">
-
-      <span className="process-number">
-        01
-      </span>
-
-      <div className="process-icon">
-        💡
-      </div>
-
-      <h3>
-        Understanding Your Vision
-      </h3>
-
-      <p>
-        We listen carefully to your ideas,
-        requirements and expectations to
-        understand the event you envision.
-      </p>
-
-    </div>
-
-    <div className="process-card">
-
-      <span className="process-number">
-        02
-      </span>
-
-      <div className="process-icon">
-        📋
-      </div>
-
-      <h3>
-        Detailed Planning & Coordination
-      </h3>
-
-      <p>
-        Our team develops a detailed plan
-        covering timelines, vendors, logistics
-        and every important requirement.
-      </p>
-
-    </div>
-
-    <div className="process-card">
-
-      <span className="process-number">
-        03
-      </span>
-
-      <div className="process-icon">
-        ✨
-      </div>
-
-      <h3>
-        Creative Execution
-      </h3>
-
-      <p>
-        We bring your ideas to life through
-        creative concepts, elegant design
-        and professional execution.
-      </p>
-
-    </div>
-
-    <div className="process-card">
-
-      <span className="process-number">
-        04
-      </span>
-
-      <div className="process-icon">
-        🎯
-      </div>
-
-      <h3>
-        On-Site Management & Support
-      </h3>
-
-      <p>
-        Our team coordinates the event on-site
-        and ensures everything runs smoothly
-        from beginning to end.
-      </p>
-
-    </div>
-
-  </div>
-
-</section>
-      
-
-      {/* =========================
-          WHY US
-          ========================= */}
-
-      <section
-        id="why"
-        className="why-section"
-      >
-
-        <div className="section-heading">
-
-          <p>
-            WHY CHOOSE US
-          </p>
-
-          <h2>
-            Why VK EVENTS?
-          </h2>
-
-          <div className="gold-line"></div>
-
-        </div>
-
-        <div className="why-cards">
-
-          <div className="why-card">
-
-            <span className="why-number">
-              01
-            </span>
-
-            <h3>
-              Creative & Elegant Planning
-            </h3>
-
-            <p>
-              Creative concepts and elegant
-              details for memorable events.
-            </p>
-
-          </div>
-
-          <div className="why-card">
-
-            <span className="why-number">
-              02
-            </span>
-
-            <h3>
-              Complete Event Management
-            </h3>
-
-            <p>
-              We manage planning, decoration
-              and execution.
-            </p>
-
-          </div>
-
-          <div className="why-card">
-
-            <span className="why-number">
-              03
-            </span>
-
-            <h3>
-              Customized Celebrations
-            </h3>
-
-            <p>
-              Services tailored to your
-              requirements and vision.
-            </p>
-
-          </div>
-
-          <div className="why-card">
-
-            <span className="why-number">
-              04
-            </span>
-
-            <h3>
-              Trusted & Dedicated Service
-            </h3>
-
-            <p>
-              Professional service and
-              smooth coordination.
-            </p>
-
-          </div>
-
-        </div>
-
-      </section>
-
-        {/* =========================
-    OUR EXPERTISE
-    ========================= */}
-
-<section
-  id="expertise"
-  className="expertise-section"
->
-
-  <div className="section-heading">
-
-    <p>
-      OUR EXPERTISE
-    </p>
-
-    <h2>
-      Everything You Need for a Perfect Event
-    </h2>
-
-    <div className="gold-line"></div>
-
-  </div>
-
-  <p className="contact-intro">
-    We bring together creativity, planning and
-    professional coordination to make every
-    celebration memorable.
-  </p>
-
-  <div className="expertise-grid">
-
-    <div className="expertise-item">
-      <span>01</span>
-      <h3>Event Planning</h3>
-      <p>
-        Complete planning and coordination
-        tailored to your event.
-      </p>
-    </div>
-
-    <div className="expertise-item">
-      <span>02</span>
-      <h3>Venue Management</h3>
-      <p>
-        Professional venue preparation and
-        smooth event-day coordination.
-      </p>
-    </div>
-
-    <div className="expertise-item">
-      <span>03</span>
-      <h3>Creative Design</h3>
-      <p>
-        Elegant themes, decoration and
-        creative event concepts.
-      </p>
-    </div>
-
-    <div className="expertise-item">
-      <span>04</span>
-      <h3>Guest Experience</h3>
-      <p>
-        Thoughtful arrangements focused on
-        guest comfort and experience.
-      </p>
-    </div>
-
-    <div className="expertise-item">
-      <span>05</span>
-      <h3>Entertainment</h3>
-      <p>
-        Artists, entertainment and activities
-        suited to your celebration.
-      </p>
-    </div>
-
-    <div className="expertise-item">
-      <span>06</span>
-      <h3>Event Support</h3>
-      <p>
-        Dedicated on-site support from setup
-        through the completion of your event.
-      </p>
-    </div>
-
-  </div>
-
-</section>
-      <section
-        id="gallery"
-        className="gallery-section"
-      >
-
-        <div className="section-heading">
-
-          <p>
-            OUR WORK
-          </p>
-
-          <h2>
-            Event Gallery
-          </h2>
-
-          <div className="gold-line"></div>
-
-        </div>
-
-        <div className="gallery-grid">
-
-          {galleryImages.map(
-            (item, index) => (
-
-              <div
-                className="gallery-item"
-                key={index}
-                onClick={() =>
-                  setSelectedGalleryIndex(
-                    index
-                  )
-                }
-              >
-
-                <img
-                  src={item.image}
-                  alt={item.title}
-                />
-
-                <div className="gallery-overlay">
-
-                  <span>
-                    {item.category}
-                  </span>
-
-                </div>
-
-              </div>
-
-            )
-          )}
-
-        </div>
-
-        {selectedGalleryIndex !== null && (
-
-          <div
-            className="gallery-lightbox"
-            onClick={() =>
-              setSelectedGalleryIndex(null)
-            }
-          >
-
-            <div
-              className="lightbox-content"
-              onClick={(e) =>
-                e.stopPropagation()
-              }
-            >
-
-              <button
-                type="button"
-                className="lightbox-close"
-                onClick={() =>
-                  setSelectedGalleryIndex(null)
-                }
-              >
-                ×
-              </button>
-
-              <img
-                src={
-                  galleryImages[
-                    selectedGalleryIndex
-                  ].image
-                }
-                alt={
-                  galleryImages[
-                    selectedGalleryIndex
-                  ].title
-                }
-                className="lightbox-image"
-              />
-
-              <div className="lightbox-info">
-
-                <p>
-                  {
-                    galleryImages[
-                      selectedGalleryIndex
-                    ].category
-                  }
-                </p>
-
-                <h2>
-                  {
-                    galleryImages[
-                      selectedGalleryIndex
-                    ].title
-                  }
-                </h2>
-
-                <span>
-                  {selectedGalleryIndex + 1}
-                  {' / '}
-                  {galleryImages.length}
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        )}
-
-      </section>
-       {/* =========================
-    OUR CREATIVE FOUNDER
-    ========================= */}
-
-<section
-  id="founder"
-  className="founder-section"
->
-
-  <div className="section-heading">
-
-    <p>
-      THE VISION BEHIND VK EVENTS
-    </p>
-
-    <h2>
-      Our Creative Founder
-    </h2>
-
-    <div className="gold-line"></div>
-
-  </div>
-
-
-  <div className="founder-container">
-
-    {/* Founder Image */}
-
-    <div className="founder-image-wrapper">
-
-      <div className="founder-image-frame">
-
-        <img
-          src={vishalFounder}
-          alt="Vishal Chouksey - Founder of VK Events"
-          className="founder-image"
-        />
-
-      </div>
-
-      <div className="founder-image-accent"></div>
-
-    </div>
-
-
-    {/* Founder Information */}
-
-    <div className="founder-content">
-
-      <p className="founder-label">
-        FOUNDER & CREATIVE DIRECTOR
-      </p>
-
-      <h3>
-        VISHAL CHOUKSEY
-      </h3>
-
-      <div className="founder-small-line"></div>
-      <a
-  href="https://www.instagram.com/vishal_chouksey06/"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="instagram-link"
->
-  Instagram— @vishal_chouksey06
-</a>
-
-      <p className="founder-intro">
-        Behind every unforgettable celebration is a
-        vision, a passion and a commitment to creating
-        something truly special.
-      </p>
-
-      <p className="founder-description">
-        Vishal Chouksey is the creative force behind
-        VK EVENTS, bringing together creativity,
-        thoughtful planning and attention to detail
-        to transform special occasions into memorable
-        experiences.
-      </p>
-
-      <p className="founder-description">
-        His vision is simple — every event should feel
-        personal, elegant and unforgettable. From
-        intimate celebrations to grand occasions,
-        VK EVENTS is built around creating experiences
-        that people remember for years to come.
-      </p>
-
-
-      <div className="founder-highlights">
-
-        <div className="founder-highlight">
-
-          <strong>
-            ✦
-          </strong>
-
-          <span>
-            Creative Vision
-          </span>
-
-        </div>
-
-        <div className="founder-highlight">
-
-          <strong>
-            ✦
-          </strong>
-
-          <span>
-            Elegant Experiences
-          </span>
-
-        </div>
-
-        <div className="founder-highlight">
-
-          <strong>
-            ✦
-          </strong>
-
-          <span>
-            Personal Touch
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <div className="founder-quote">
-
-        <span>
-          “
-        </span>
-
-        <p>
-          We don't just organize events.
-          We create moments worth remembering.
-        </p>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-      {/* =========================
-          ABOUT
-          ========================= */}
-
-      <section
-        id="about"
-        className="about-section"
-      >
-
-        <div className="about-content">
-
-          <div className="about-badge">
-            VK
-          </div>
-
-          <div>
-
-            <div className="section-heading left-heading">
-
-              <p>
-                WHO WE ARE
-              </p>
-
-              <h2>
-                About VK EVENTS
-              </h2>
-
-              <div className="gold-line"></div>
-
-            </div>
-
-            <p className="about-text">
-
-              Welcome to VK EVENTS & SERVICES,
-              where creativity meets precision.
-              We are a dynamic event management
-              company dedicated to crafting
-              unforgettable experiences for
-              every occasion.
-
-              <br />
-              <br />
-
-              Whether it is a dream wedding,
-              a corporate event, a birthday
-              celebration, a convocation ceremony,
-              or a grand inauguration, we bring
-              your vision to life through creativity,
-              innovation, and meticulous planning.
-
-              <br />
-              <br />
-
-              From concept to flawless execution,
-              our team ensures that every event
-              becomes a memorable experience
-              while you enjoy every special moment.
-
-            </p>
-
-          </div>
-
-        </div>
-
-      </section>
-
-      {/* =========================
-          CONTACT / BOOKING
-          ========================= */}
-
-      <section
-        id="contact"
-        className="contact-section"
-      >
-
-        <div className="section-heading">
-
-          <p>
-            LET'S CREATE SOMETHING SPECIAL
-          </p>
-
-          <h2>
-            Book Your Event
-          </h2>
-
-          <div className="gold-line"></div>
-
-        </div>
-
-        <p className="contact-intro">
-          Tell us about your event and our
-          team will get in touch.
-        </p>
-
-        <form
-          className="booking-form"
-          onSubmit={handleBookingSubmit}
-        >
-
-          <input
-            type="text"
-            name="name"
-            placeholder="Your Name *"
-            value={booking.name}
-            onChange={handleBookingChange}
-          />
-
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone Number *"
-            value={booking.phone}
-            onChange={handleBookingChange}
-          />
-
-          <select
-            name="event_type"
-            value={booking.event_type}
-            onChange={handleBookingChange}
-          >
-
-            <option value="">
-              Select Event Type *
-            </option>
-
-            <option value="Wedding">
-              Wedding
-            </option>
-
-            <option value="Wedding Function">
-              Wedding Function
-            </option>
-
-            <option value="Birthday Party">
-              Birthday Party
-            </option>
-
-            <option value="Convocation">
-              Convocation
-            </option>
-
-            <option value="Inauguration">
-              Inauguration
-            </option>
-
-            <option value="Other Celebration">
-              Other Celebration
-            </option>
-
-          </select>
-
-          <input
-            type="date"
-            name="event_date"
-            value={booking.event_date}
-            onChange={handleBookingChange}
-          />
-
-          <input
-            type="text"
-            name="location"
-            placeholder="Event Location *"
-            value={booking.location}
-            onChange={handleBookingChange}
-          />
-
-          <input
-            type="number"
-            name="guests"
-            placeholder="Number of Guests"
-            min="1"
-            value={booking.guests}
-            onChange={handleBookingChange}
-          />
-
-          <textarea
-            name="message"
-            placeholder="Tell us about your requirements"
-            value={booking.message}
-            onChange={handleBookingChange}
-          ></textarea>
-
-          <button type="submit">
-            Send Enquiry
-          </button>
-
-          <a
-            href="tel:+919424455947"
-            className="call-button"
-          >
-            Call Now
-          </a>
-
-          <a
-            href="https://wa.me/919424455947?text=Hello%20VK%20EVENTS,%20I%20would%20like%20to%20enquire%20about%20an%20event."
-            className="whatsapp-button"
-            target="_blank"
-            rel="noreferrer"
-          >
-            WhatsApp Us
-          </a>
-
-        </form>
-
-        <div className="contact-info">
-
-          <div className="contact-item">
-
-            <span>
-              📧
-            </span>
-
-            <p>
-              vkevents.services06@gmail.com
-            </p>
-
-          </div>
-
-          <div className="contact-item">
-
-            <span>
-              📞
-            </span>
-
-            <p>
-              +91 94244 55947
-            </p>
-
-          </div>
-
-        </div>
-
-      </section>
-   
 
       {/* =========================
           CUSTOMER ENQUIRIES

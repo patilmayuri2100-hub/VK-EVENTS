@@ -6524,3 +6524,1150 @@ footer {
   color: #111;
   transform: translateY(-2px);
 }
+/* =========================
+   MEET THE DIRECTOR - NEW CONTENT
+   ========================= */
+
+.founder-approach {
+  margin-top: 35px;
+}
+
+.founder-approach h4 {
+  font-size: 14px;
+  letter-spacing: 3px;
+  margin-bottom: 22px;
+  font-weight: 600;
+}
+
+.founder-highlights {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 25px;
+}
+
+.founder-highlight {
+  padding: 18px 12px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  text-align: center;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.founder-highlight strong {
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+.founder-highlight span {
+  font-size: 11px;
+  letter-spacing: 1px;
+  line-height: 1.5;
+}
+
+.founder-approach-item {
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.founder-approach-item strong {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 2px;
+  margin-bottom: 7px;
+}
+
+.founder-approach-item p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  opacity: 0.85;
+}
+
+.founder-signature {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.founder-signature strong {
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+
+.founder-signature span {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.founder-cta {
+  margin-top: 25px;
+  padding: 14px 26px;
+  border: 1px solid rgba(212, 175, 55, 0.7);
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.founder-cta:hover {
+  transform: translateY(-2px);
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 768px) {
+
+  .founder-highlights {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .founder-approach {
+    margin-top: 28px;
+  }
+
+  .founder-approach-item {
+    padding: 14px 0;
+  }
+
+  .founder-cta {
+    width: 100%;
+  }
+
+}
+/* =========================================
+   VK EVENTS - MEET THE DIRECTOR
+   CLEAN PHOTO + TEXT LAYOUT
+   ========================================= */
+
+#founder {
+  padding: 120px 7% 100px;
+  scroll-margin-top: 100px;
+}
+
+/* ---------- SECTION HEADING ---------- */
+
+#founder .section-heading {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+#founder .section-heading p {
+  display: block !important;
+  margin: 0 0 12px;
+  font-size: 13px;
+  letter-spacing: 4px;
+  line-height: 1.5;
+}
+
+#founder .section-heading h2 {
+  margin: 0;
+  font-size: 42px;
+  line-height: 1.2;
+  letter-spacing: 2px;
+}
+
+
+/* ---------- MAIN LAYOUT ---------- */
+
+#founder .founder-container {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+
+  display: grid !important;
+  grid-template-columns: 400px minmax(0, 1fr) !important;
+
+  gap: 65px;
+  align-items: start;
+}
+
+
+/* ---------- PHOTO COLUMN ---------- */
+
+#founder .founder-image-wrapper {
+  width: 100%;
+  position: relative !important;
+  top: auto !important;
+  align-self: start;
+}
+
+#founder .founder-image-frame {
+  width: 100%;
+  overflow: hidden;
+}
+
+#founder .founder-image {
+  display: block !important;
+  width: 100% !important;
+  height: 520px !important;
+
+  object-fit: cover;
+  object-position: center top;
+}
+
+#founder .founder-image-accent {
+  width: 70px;
+  height: 3px;
+  margin-top: 18px;
+}
+
+
+/* ---------- TEXT COLUMN ---------- */
+
+#founder .founder-content {
+  width: 100%;
+  max-width: 700px;
+  padding-top: 5px;
+}
+
+
+/* Director label */
+
+#founder .founder-label {
+  margin: 0 0 12px;
+  font-size: 12px;
+  letter-spacing: 3px;
+  line-height: 1.5;
+}
+
+
+/* Vishal name */
+
+#founder .founder-content h3 {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.2;
+  letter-spacing: 2px;
+}
+
+
+/* Small gold line */
+
+#founder .founder-small-line {
+  width: 55px;
+  height: 2px;
+  margin: 16px 0 18px;
+}
+
+
+/* Instagram */
+
+#founder .instagram-link {
+  display: inline-block;
+  margin: 0 0 30px;
+  padding: 10px 17px;
+
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+
+
+/* ---------- INTRO ---------- */
+
+#founder .founder-intro {
+  margin: 0 0 25px;
+
+  font-size: 23px;
+  line-height: 1.45;
+  letter-spacing: 0.5px;
+}
+
+
+/* ---------- NORMAL PARAGRAPHS ---------- */
+
+#founder .founder-description {
+  margin: 0 0 17px;
+
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+
+/* ---------- EXPERIENCE ---------- */
+
+#founder .founder-approach {
+  margin-top: 38px;
+}
+
+#founder .founder-approach h4 {
+  margin: 0 0 18px;
+
+  font-size: 13px;
+  letter-spacing: 3px;
+  line-height: 1.5;
+}
+
+
+/* Experience cards */
+
+#founder .founder-highlights {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+
+  gap: 12px;
+  margin: 0 0 28px;
+}
+
+#founder .founder-highlight {
+  min-height: 105px;
+  padding: 16px 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+
+  border: 1px solid rgba(212, 175, 55, 0.35);
+}
+
+#founder .founder-highlight strong {
+  display: block;
+  margin-bottom: 8px;
+
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+#founder .founder-highlight span {
+  display: block;
+
+  font-size: 10px;
+  line-height: 1.45;
+  letter-spacing: 0.8px;
+}
+
+
+/* ---------- MY APPROACH ---------- */
+
+#founder .founder-approach-item {
+  padding: 15px 0;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+#founder .founder-approach-item strong {
+  display: block;
+  margin-bottom: 6px;
+
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+
+#founder .founder-approach-item p {
+  margin: 0;
+
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+
+/* ---------- QUOTE ---------- */
+
+#founder .founder-quote {
+  margin-top: 32px;
+  padding: 22px 25px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+
+  border-left: 2px solid;
+}
+
+#founder .founder-quote span {
+  font-size: 38px;
+  line-height: 0.8;
+}
+
+#founder .founder-quote p {
+  margin: 0;
+
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+
+/* ---------- SIGNATURE ---------- */
+
+#founder .founder-signature {
+  margin-top: 25px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#founder .founder-signature strong {
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+#founder .founder-signature span {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+
+/* ---------- CTA ---------- */
+
+#founder .founder-cta {
+  margin-top: 22px;
+  padding: 14px 25px;
+
+  background: transparent;
+  border: 1px solid;
+
+  font-size: 12px;
+  letter-spacing: 2px;
+
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+#founder .founder-cta:hover {
+  transform: translateY(-2px);
+}
+
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (max-width: 1000px) {
+
+  #founder .founder-container {
+    grid-template-columns: 320px minmax(0, 1fr) !important;
+    gap: 40px;
+  }
+
+  #founder .founder-image {
+    height: 460px !important;
+  }
+
+  #founder .founder-highlights {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 700px) {
+
+  #founder {
+    padding: 80px 6% 70px;
+  }
+
+  #founder .section-heading {
+    margin-bottom: 40px;
+  }
+
+  #founder .section-heading h2 {
+    font-size: 29px;
+  }
+
+  #founder .section-heading p {
+    font-size: 11px;
+    letter-spacing: 3px;
+  }
+
+  #founder .founder-container {
+    grid-template-columns: 1fr !important;
+    gap: 40px;
+  }
+
+  #founder .founder-image-wrapper {
+    max-width: 450px;
+    margin: 0 auto;
+  }
+
+  #founder .founder-image {
+    height: 480px !important;
+  }
+
+  #founder .founder-content {
+    max-width: 100%;
+  }
+
+  #founder .founder-content h3 {
+    font-size: 28px;
+  }
+
+  #founder .founder-intro {
+    font-size: 19px;
+  }
+
+  #founder .founder-highlights {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  #founder .founder-cta {
+    width: 100%;
+  }
+
+}
+
+
+/* SMALL PHONES */
+
+@media (max-width: 450px) {
+
+  #founder .founder-image {
+    height: 400px !important;
+  }
+
+  #founder .founder-highlights {
+    grid-template-columns: 1fr !important;
+  }
+
+}
+/* =========================================
+   COMPACT MY APPROACH + DIRECTOR CONTENT
+   ========================================= */
+
+#founder .founder-approach {
+  margin-top: 28px;
+  margin-bottom: 0;
+}
+
+#founder .founder-approach h4 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  letter-spacing: 3px;
+}
+
+
+/* MY APPROACH ITEMS */
+
+#founder .founder-approach-item {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+#founder .founder-approach-item strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+#founder .founder-approach-item p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+
+/* =========================================
+   QUOTE
+   ========================================= */
+
+#founder .founder-quote {
+  margin: 22px 0 0;
+  padding: 15px 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  border-left: 2px solid;
+}
+
+#founder .founder-quote span {
+  font-size: 32px;
+  line-height: 1;
+}
+
+#founder .founder-quote p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+
+/* =========================================
+   DIRECTOR SIGNATURE
+   ========================================= */
+
+#founder .founder-signature {
+  margin-top: 18px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+#founder .founder-signature strong {
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+
+#founder .founder-signature span {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+
+/* =========================================
+   BUTTON
+   ========================================= */
+
+#founder .founder-cta {
+  margin-top: 18px;
+  padding: 12px 22px;
+
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+/* =========================================
+   KEEP PHOTO ALIGNED WITH FULL CONTENT
+   ========================================= */
+
+#founder .founder-container {
+  align-items: stretch !important;
+}
+
+#founder .founder-image-wrapper {
+  height: 100%;
+  display: flex !important;
+  flex-direction: column;
+}
+
+#founder .founder-image-frame {
+  flex: 1;
+  height: 100%;
+}
+
+#founder .founder-image {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 850px;
+  object-fit: cover;
+  object-position: center top;
+}
+
+#founder .founder-image-accent {
+  flex-shrink: 0;
+}
+/* =========================================
+   MY APPROACH - DIFFERENT HEADING COLORS
+   ========================================= */
+
+#founder .founder-approach-item strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+
+/* LISTEN FIRST */
+#founder .founder-approach-item:nth-child(2) strong {
+  color: #d4af37;
+}
+
+/* PLAN SMART */
+#founder .founder-approach-item:nth-child(3) strong {
+  color: #f0d98a;
+}
+
+/* EXECUTE WITH PRECISION */
+#founder .founder-approach-item:nth-child(4) strong {
+  color: #c9a227;
+}
+
+/* BE THERE */
+#founder .founder-approach-item:nth-child(5) strong {
+  color: #e6c75a;
+}
+.gallery-management-card {
+  margin-top: 30px;
+  padding: 28px;
+  border-radius: 18px;
+}
+
+.gallery-management-card h3 {
+  margin-bottom: 22px;
+}
+
+.gallery-management-card form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.gallery-management-card form input,
+.gallery-management-card form select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  border-radius: 8px;
+}
+
+.gallery-management-card form input[type="text"]:last-of-type {
+  grid-column: 1 / -1;
+}
+
+.gallery-management-card form small {
+  grid-column: 1 / -1;
+  margin-top: -8px;
+  opacity: 0.7;
+}
+
+.gallery-management-card form button {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .gallery-management-card form {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-management-card form input[type="text"]:last-of-type,
+  .gallery-management-card form small,
+  .gallery-management-card form button {
+    grid-column: auto;
+  }
+}
+.event-videos-section {
+  margin-top: 70px;
+  width: 100%;
+}
+
+.event-videos-heading {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.event-videos-heading p {
+  color: #c9a227;
+  letter-spacing: 3px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.event-videos-heading h2 {
+  color: #fff;
+  font-size: 32px;
+  margin: 0 0 15px;
+}
+
+.event-videos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  width: 100%;
+}
+
+.event-video-card {
+  background: #111;
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.event-video-card iframe {
+  display: block;
+  width: 100%;
+  height: 300px;
+  border: none;
+}
+
+.event-video-card h3 {
+  color: #fff;
+  font-size: 19px;
+  margin: 18px 20px 6px;
+}
+
+.event-video-card p {
+  color: #c9a227;
+  font-size: 13px;
+  margin: 0 20px 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+  .event-videos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-video-card iframe {
+    height: 240px;
+  }
+}
+/* FINAL PUBLIC WEBSITE FIX */
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.hero-section {
+  min-height: calc(100vh - 94px) !important;
+  padding: 70px 8% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 60px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.hero-content {
+  width: 52% !important;
+  max-width: 680px !important;
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+.hero-content h1 {
+  font-size: clamp(48px, 5vw, 72px) !important;
+  line-height: 1.05 !important;
+  max-width: 650px !important;
+}
+
+.hero-description {
+  max-width: 650px !important;
+  font-size: 16px !important;
+  line-height: 1.8 !important;
+}
+
+.hero-decoration-circle {
+  width: 390px !important;
+  height: 390px !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.contact-section {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  padding: 110px 8% !important;
+  background: #101010 !important;
+}
+
+.booking-form {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 850px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 20px !important;
+}
+
+.contact-info {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 850px !important;
+  margin: 40px auto 0 !important;
+}
+
+.services-section,
+.process-section,
+.why-section,
+.expertise-section,
+.gallery-section,
+.about-section {
+  position: relative !important;
+  width: 100% !important;
+  clear: both !important;
+}
+
+#services,
+#process,
+#why,
+#expertise,
+#gallery,
+#about,
+#contact {
+  scroll-margin-top: 105px;
+}
+
+.services-section {
+  padding: 110px 8% !important;
+}
+
+.service-cards {
+  max-width: 1150px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 24px !important;
+}
+
+.expertise-section {
+  padding: 110px 8% !important;
+}
+
+.expertise-grid {
+  max-width: 1150px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 24px !important;
+}
+
+.why-section {
+  padding: 110px 8% !important;
+}
+
+.gallery-section {
+  padding: 110px 8% !important;
+}
+
+.about-section {
+  padding: 110px 8% !important;
+}
+
+@media (max-width: 950px) {
+  .hero-section {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+
+  .hero-content {
+    width: 100% !important;
+    max-width: 750px !important;
+  }
+
+  .hero-line {
+    margin: 25px auto !important;
+  }
+
+  .hero-buttons {
+    justify-content: center !important;
+  }
+
+  .service-cards,
+  .expertise-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .booking-form {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-section {
+    padding: 60px 6% !important;
+  }
+
+  .hero-content h1 {
+    font-size: 43px !important;
+  }
+
+  .hero-decoration-circle {
+    width: 280px !important;
+    height: 280px !important;
+  }
+
+  .service-cards,
+  .expertise-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .contact-section,
+  .services-section,
+  .process-section,
+  .why-section,
+  .expertise-section,
+  .gallery-section,
+  .about-section {
+    padding-left: 6% !important;
+    padding-right: 6% !important;
+  }
+}
+.founder-social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 28px 0;
+}
+
+.founder-instagram {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 20px;
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  min-width: 210px;
+}
+
+.founder-instagram span {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #c9a227;
+  font-weight: 600;
+}
+
+.founder-instagram:hover {
+  border-color: #c9a227;
+  transform: translateY(-3px);
+  background: rgba(201, 162, 39, 0.08);
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .founder-social-links {
+    flex-direction: column;
+  }
+
+  .founder-instagram {
+    width: 100%;
+  }
+}
+.hero-services {
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 18px 0 10px;
+  line-height: 1.8;
+}
+
+.hero-tagline {
+  font-size: 18px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #c9a227;
+  font-weight: 600;
+  margin: 12px 0 30px;
+  line-height: 1.6;
+}
+
+.founder-approach-title {
+  color: #c9a227;
+  font-size: 15px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-top: 30px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 600px) {
+  .hero-services {
+    font-size: 11px;
+    letter-spacing: 1.3px;
+  }
+
+  .hero-tagline {
+    font-size: 15px;
+    letter-spacing: 2px;
+    line-height: 1.7;
+  }
+}
+/* =========================
+   EVENT VIDEOS
+   ========================= */
+
+.gallery-video-section {
+  max-width: 1200px;
+  margin: 70px auto 0;
+  padding: 40px 0;
+}
+
+.gallery-video-section h2 {
+  color: #d4af37;
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 35px;
+}
+
+.gallery-video-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 24px;
+}
+
+.gallery-video-card {
+  min-width: 0;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gallery-video-card {
+  background: #111;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 30px;
+  text-align: center;
+  transition: 0.3s ease;
+}
+
+.gallery-video-card:hover {
+  transform: translateY(-5px);
+  border-color: #d4af37;
+}
+
+.gallery-video-card h3 {
+  color: #fff;
+  margin: 15px 0 10px;
+  font-size: 22px;
+}
+
+.gallery-video-card p {
+  color: #d4af37;
+  margin-bottom: 20px;
+}
+
+.gallery-video-card a {
+  display: inline-block;
+  padding: 12px 22px;
+  background: #d4af37;
+  color: #111;
+  text-decoration: none;
+  font-weight: 700;
+  transition: 0.3s ease;
+}
+
+.gallery-video-card a:hover {
+  background: #fff;
+}
+
+@media (max-width: 900px) {
+  .gallery-video-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .gallery-video-section {
+    padding: 30px 5%;
+  }
+
+  .gallery-video-grid {
+    grid-template-columns: 1fr;
+  }
+}
