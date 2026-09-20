@@ -4,6 +4,12 @@ const mysql = require("mysql2");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const { v2: cloudinary } = require("cloudinary");
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 require('dotenv').config();
 
@@ -523,67 +529,47 @@ app.post(
     const category = req.body.category;
 
     if (!title || !category || !req.file) {
-
       return res.status(400).json({
         success: false,
         message: "Please provide title, category and image."
       });
-// =========================
-// VIDEO UPLOAD
-// =========================
-
-app.post(
-  "/api/videos",
-  videoUpload.single("video"),
-  function (req, res) {
-
-    console.log("VIDEO UPLOAD REQUEST RECEIVED");
-
-    const title = req.body.title;
-    const category = req.body.category;
-
-    if (!title || !category || !req.file) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide title, category and video."
-      });
     }
 
-    const video = "/uploads/videos/" + req.file.filename;
+    const image = "/uploads/gallery/" + req.file.filename;
 
     const sql = `
-      INSERT INTO videos
-      (title, category, video)
+      INSERT INTO gallery
+      (title, category, image)
       VALUES (?, ?, ?)
     `;
 
     db.query(
       sql,
-      [title, category, video],
+      [title, category, image],
       function (err, result) {
 
         if (err) {
           console.log(
-            "Video upload database error:",
+            "Gallery upload database error:",
             err.message
           );
 
           return res.status(500).json({
             success: false,
-            message: "Failed to save event video."
+            message: "Failed to save gallery image."
           });
         }
 
         console.log(
-          "Event video uploaded:",
+          "Gallery image uploaded:",
           result.insertId
         );
 
         res.json({
           success: true,
-          message: "Event video uploaded successfully!",
+          message: "Gallery image uploaded successfully!",
           id: result.insertId,
-          video: video
+          image: image
         });
 
       }
@@ -591,6 +577,67 @@ app.post(
 
   }
 );
+
+// =========================
+// VIDEO UPLOAD
+// =========================
+
+app.post("/api/videos", function (req, res) {
+
+  console.log("VIDEO LINK REQUEST RECEIVED");
+
+  const title = req.body.title;
+  const category = req.body.category;
+  const video = req.body.video;
+
+  if (!title || !category || !video) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide title, category and video link."
+    });
+  }
+
+  const sql = `
+    INSERT INTO videos
+    (title, category, video)
+    VALUES (?, ?, ?)
+  `;
+
+  db.query(
+    sql,
+    [title, category, video],
+    function (err, result) {
+
+      if (err) {
+        console.log(
+          "Video database error:",
+          err.message
+        );
+
+        return res.status(500).json({
+          success: false,
+          message: "Failed to save event video."
+        });
+      }
+
+      console.log(
+        "Event video added:",
+        result.insertId
+      );
+
+      res.json({
+        success: true,
+        message: "Event video added successfully!",
+        id: result.insertId,
+        video: video
+      });
+
+    }
+  );
+
+});
+
+
 // =========================
 // GET EVENT VIDEOS
 // =========================
@@ -627,141 +674,7 @@ app.get("/api/videos", function (req, res) {
   });
 
 });
-// =========================
-// DELETE EVENT VIDEO
-// =========================
 
-app.delete("/api/videos/:id", function (req, res) {
-
-  const videoId = req.params.id;
-
-  console.log(
-    "DELETE VIDEO REQUEST RECEIVED:",
-    videoId
-  );
-
-  const sql = `
-    SELECT video
-    FROM videos
-    WHERE id = ?
-  `;
-
-  db.query(sql, [videoId], function (err, results) {
-
-    if (err) {
-      console.log(
-        "Find video database error:",
-        err.message
-      );
-
-      return res.status(500).json({
-        success: false,
-        message: "Failed to find event video."
-      });
-    }
-
-    if (results.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Event video not found."
-      });
-    }
-
-    const videoPath = path.join(
-      __dirname,
-      results[0].video
-    );
-
-    const deleteSql = `
-      DELETE FROM videos
-      WHERE id = ?
-    `;
-
-    db.query(deleteSql, [videoId], function (deleteErr, result) {
-
-      if (deleteErr) {
-        console.log(
-          "Delete video database error:",
-          deleteErr.message
-        );
-
-        return res.status(500).json({
-          success: false,
-          message: "Failed to delete event video."
-        });
-      }
-
-      if (result.affectedRows === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "Event video not found."
-        });
-      }
-
-      if (fs.existsSync(videoPath)) {
-        fs.unlinkSync(videoPath);
-      }
-
-      console.log(
-        "Event video deleted:",
-        videoId
-      );
-
-      res.json({
-        success: true,
-        message: "Event video deleted successfully!"
-      });
-
-    });
-
-  });
-
-});
-    }
-
-    const image = "/uploads/" + req.file.filename;
-
-    const sql = `
-      INSERT INTO gallery
-      (title, category, image)
-      VALUES (?, ?, ?)
-    `;
-
-    db.query(
-      sql,
-      [title, category, image],
-      function (err, result) {
-
-        if (err) {
-
-          console.log(
-            "Gallery upload database error:",
-            err.message
-          );
-
-          return res.status(500).json({
-            success: false,
-            message: "Failed to save gallery photo."
-          });
-        }
-
-        console.log(
-          "Gallery photo uploaded:",
-          result.insertId
-        );
-
-        res.json({
-          success: true,
-          message: "Gallery photo uploaded successfully!",
-          id: result.insertId,
-          image: image
-        });
-
-      }
-    );
-
-  }
-);
 // =========================
 // DELETE GALLERY PHOTO
 // =========================
@@ -822,7 +735,66 @@ app.delete("/api/gallery/:id", function (req, res) {
   );
 
 });
+// =========================
+// DELETE EVENT VIDEO
+// =========================
 
+app.delete("/api/videos/:id", function (req, res) {
+
+  const videoId = req.params.id;
+
+  console.log(
+    "DELETE VIDEO REQUEST RECEIVED:",
+    videoId
+  );
+
+  const sql = `
+    DELETE FROM videos
+    WHERE id = ?
+  `;
+
+  db.query(
+    sql,
+    [videoId],
+    function (err, result) {
+
+      if (err) {
+
+        console.log(
+          "Delete video database error:",
+          err.message
+        );
+
+        return res.status(500).json({
+          success: false,
+          message: "Failed to delete event video."
+        });
+
+      }
+
+      if (result.affectedRows === 0) {
+
+        return res.status(404).json({
+          success: false,
+          message: "Event video not found."
+        });
+
+      }
+
+      console.log(
+        "Event video deleted:",
+        videoId
+      );
+
+      res.json({
+        success: true,
+        message: "Event video deleted successfully!"
+      });
+
+    }
+  );
+
+});
 // =========================
 // ADMIN LOGIN
 // =========================
