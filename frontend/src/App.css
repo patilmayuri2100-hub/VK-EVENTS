@@ -8434,3 +8434,14 @@ body {
 #founder .founder-approach-item p {
   text-align: center !important;
 }
+#founder .founder-quote p {
+  font-style: normal !important;
+  font-family: inherit !important;
+  font-weight: normal !important;
+}
+#founder .founder-signature strong,
+#founder .founder-signature span {
+  font-family: Arial, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+}
