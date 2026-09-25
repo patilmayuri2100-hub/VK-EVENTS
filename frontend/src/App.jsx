@@ -658,6 +658,7 @@ const handleChangePassword = async () => {
   useEffect(() => {
     fetchBookings()
       fetchAdminReviews()
+       fetchReviews()
   }, [])
   useEffect(() => {
   fetchEvents()
@@ -716,6 +717,21 @@ useEffect(() => {
       alert('Unable to connect to the VK EVENTS server.')
     }
   }
+  const fetchReviews = async () => {
+  try {
+    const response = await fetch(
+      "https://vk-events.onrender.com/api/reviews"
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+      setReviews(data.reviews);
+    }
+  } catch (error) {
+    console.error("Failed to fetch reviews:", error);
+  }
+};
   const fetchAdminReviews = async () => {
   try {
     const response = await fetch(
@@ -2295,7 +2311,31 @@ const galleryImages = [
       {reviewSubmitting ? "SUBMITTING..." : "SUBMIT REVIEW"}
     </button>
 
-  </form>
+ </form>
+
+{reviews.length > 0 && (
+  <div className="public-reviews-list">
+
+    {reviews.map((review) => (
+      <div
+        className="public-review-card"
+        key={review.id}
+      >
+
+        <h3>{review.name}</h3>
+
+        <p className="review-stars">
+          {"★".repeat(review.rating)}
+          {"☆".repeat(5 - review.rating)}
+        </p>
+
+        <p>{review.comment}</p>
+
+      </div>
+    ))}
+
+  </div>
+)}
 
 </section>
    {/* =========================
@@ -2458,6 +2498,7 @@ const galleryImages = [
           ========================= */}
 
     {isAdmin && (
+      <>
   <section id="bookings" className="bookings-section">
 
   <div className="section-heading">
@@ -2661,7 +2702,7 @@ const galleryImages = [
   )}
 
 </section>
-)}
+    
 {/* =========================
    ADMIN REVIEWS
    ========================= */}
@@ -2838,6 +2879,9 @@ const galleryImages = [
   )}
 
 </section>
+</>
+)}
+
 {selectedBooking && (
   <div
     className="booking-modal-overlay"
