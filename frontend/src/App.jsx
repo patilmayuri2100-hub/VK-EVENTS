@@ -56,7 +56,7 @@ const [videoFile, setVideoFile] = useState(null)
 const [videoUploading, setVideoUploading] = useState(false)
 const [uploadedVideos, setUploadedVideos] = useState([])
 const [reviews, setReviews] = useState([])
-
+const [adminReviews, setAdminReviews] = useState([])
 const [reviewForm, setReviewForm] = useState({
   name: '',
   rating: 5,
@@ -657,6 +657,7 @@ const handleChangePassword = async () => {
 
   useEffect(() => {
     fetchBookings()
+      fetchAdminReviews()
   }, [])
   useEffect(() => {
   fetchEvents()
@@ -715,6 +716,21 @@ useEffect(() => {
       alert('Unable to connect to the VK EVENTS server.')
     }
   }
+  const fetchAdminReviews = async () => {
+  try {
+    const response = await fetch(
+      "https://vk-events.onrender.com/api/admin/reviews"
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+      setAdminReviews(data.reviews);
+    }
+  } catch (error) {
+    console.error("Failed to fetch admin reviews:", error);
+  }
+};
 /* =========================
    DELETE EVENT
    ========================= */
@@ -2646,6 +2662,182 @@ const galleryImages = [
 
 </section>
 )}
+{/* =========================
+   ADMIN REVIEWS
+   ========================= */}
+
+<section className="admin-reviews-section">
+
+  <div className="section-heading">
+    <p>ADMIN PANEL</p>
+    <h2>Customer Reviews</h2>
+    <div className="gold-line"></div>
+  </div>
+
+  {adminReviews.length === 0 ? (
+
+    <p>No reviews submitted yet.</p>
+
+  ) : (
+
+    <div className="admin-reviews-list">
+
+      {adminReviews.map((review) => (
+
+        <div
+          className="admin-review-card"
+          key={review.id}
+        >
+
+          <div className="admin-review-info">
+
+            <h3>{review.name}</h3>
+
+            <p className="review-stars">
+              {"★".repeat(review.rating)}
+              {"☆".repeat(5 - review.rating)}
+            </p>
+
+            <p className="review-comment">
+              {review.comment}
+            </p>
+
+            <p>
+              <strong>Status:</strong>{" "}
+              {review.status}
+            </p>
+
+          </div>
+
+          {review.status === "pending" && (
+
+            <div className="review-admin-actions">
+
+              <button
+                type="button"
+                onClick={async () => {
+
+                  try {
+
+                    const response = await fetch(
+                      `https://vk-events.onrender.com/api/admin/reviews/${review.id}`,
+                      {
+                        method: "PUT",
+                        headers: {
+                          "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                          status: "approved"
+                        })
+                      }
+                    );
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                      alert("Review approved successfully!");
+                      fetchAdminReviews();
+                    } else {
+                      alert(data.message || "Failed to approve review.");
+                    }
+
+                  } catch (error) {
+                    console.error(error);
+                    alert("Unable to connect to server.");
+                  }
+
+                }}
+              >
+                Approve
+              </button>
+
+              <button
+                type="button"
+                onClick={async () => {
+
+                  try {
+
+                    const response = await fetch(
+                      `https://vk-events.onrender.com/api/admin/reviews/${review.id}`,
+                      {
+                        method: "PUT",
+                        headers: {
+                          "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                          status: "rejected"
+                        })
+                      }
+                    );
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                      alert("Review rejected.");
+                      fetchAdminReviews();
+                    } else {
+                      alert(data.message || "Failed to reject review.");
+                    }
+
+                  } catch (error) {
+                    console.error(error);
+                    alert("Unable to connect to server.");
+                  }
+
+                }}
+              >
+                Reject
+              </button>
+
+            </div>
+        
+          )}
+<button
+  type="button"
+  onClick={async () => {
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this review?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+
+      const response = await fetch(
+        `https://vk-events.onrender.com/api/admin/reviews/${review.id}`,
+        {
+          method: "DELETE"
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Review deleted successfully!");
+        fetchAdminReviews();
+      } else {
+        alert(data.message || "Failed to delete review.");
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert("Unable to connect to server.");
+    }
+
+  }}
+>
+  Delete
+</button>
+        </div>
+
+      ))}
+
+    </div>
+
+  )}
+
+</section>
 {selectedBooking && (
   <div
     className="booking-modal-overlay"

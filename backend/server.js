@@ -757,6 +757,38 @@ app.put("/api/admin/reviews/:id", function (req, res) {
     }
   );
 });
+// Delete a review
+app.delete("/api/admin/reviews/:id", function (req, res) {
+
+  const reviewId = req.params.id;
+
+  const sql = `
+    DELETE FROM reviews
+    WHERE id = ?
+  `;
+
+  db.query(
+    sql,
+    [reviewId],
+    function (err, result) {
+
+      if (err) {
+        console.log("Review delete error:", err.message);
+
+        return res.status(500).json({
+          success: false,
+          message: "Failed to delete review."
+        });
+      }
+
+      res.json({
+        success: true,
+        message: "Review deleted successfully."
+      });
+
+    }
+  );
+});
 // =========================
 // VIDEO UPLOAD
 // =========================
