@@ -85,24 +85,36 @@ app.use(
   "/uploads",
   express.static(path.join(__dirname, "uploads"))
 );
-const db = mysql.createConnection({
+const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   port: process.env.DB_PORT,
+
   ssl: {
     minVersion: "TLSv1.2"
-  }
+  },
+
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0,
+  connectTimeout: 10000
 });
 
-db.connect(function (err) {
-  if (err) {
-    console.log("MySQL connection error: " + err.message);
-    return;
-  }
+db.on("error", function (err) {
+  console.error("MySQL pool error:", err);
+});
 
-  console.log("MySQL connected successfully!");
+db.query("SELECT 1", function (err) {
+  if (err) {
+    console.error("MySQL connection error:", err.message);
+  } else {
+    console.log("MySQL connected successfully!");
+  }
 });
 
 
