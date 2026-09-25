@@ -599,7 +599,94 @@ if (error) {
 
   }
 );
+// =========================
+// CUSTOMER REVIEWS
+// =========================
 
+// Submit a review
+app.post("/api/reviews", function (req, res) {
+
+  const { name, rating, comment } = req.body;
+
+  if (!name || !rating || !comment) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide name, rating and review."
+    });
+  }
+
+  const sql = `
+    INSERT INTO reviews
+    (name, rating, comment, status)
+    VALUES (?, ?, ?, 'pending')
+  `;
+
+  db.query(
+    sql,
+    [name, rating, comment],
+    function (err, result) {
+
+      if (err) {
+        console.log(
+          "Review database error:",
+          err.message
+        );
+
+        return res.status(500).json({
+          success: false,
+          message: "Failed to submit review."
+        });
+      }
+
+      console.log(
+        "Review submitted:",
+        result.insertId
+      );
+
+      res.json({
+        success: true,
+        message: "Review submitted successfully!"
+      });
+
+    }
+  );
+});
+
+
+// Get approved reviews
+app.get("/api/reviews", function (req, res) {
+
+  const sql = `
+    SELECT id, name, rating, comment, created_at
+    FROM reviews
+    WHERE status = 'approved'
+    ORDER BY created_at DESC
+  `;
+
+  db.query(
+    sql,
+    function (err, results) {
+
+      if (err) {
+        console.log(
+          "Reviews fetch error:",
+          err.message
+        );
+
+        return res.status(500).json({
+          success: false,
+          message: "Failed to fetch reviews."
+        });
+      }
+
+      res.json({
+        success: true,
+        reviews: results
+      });
+
+    }
+  );
+});
 // =========================
 // VIDEO UPLOAD
 // =========================
