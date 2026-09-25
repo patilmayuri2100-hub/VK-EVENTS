@@ -124,7 +124,9 @@ const fetchGalleryImages = async () => {
       const formattedImages = data.images.map(
         (item) => ({
           id: item.id,
-          image: `${API_URL}${item.image}`,
+          image: item.image.startsWith("http")
+  ? item.image
+  : `${API_URL}${item.image}`,
           title: item.title,
           category: item.category
         })

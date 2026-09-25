@@ -30,24 +30,6 @@ if (!fs.existsSync(uploadDir)) {
 // =========================
 // GALLERY UPLOAD SETUP
 // =========================
-
-const storage = multer.diskStorage({
-
-  destination: function (req, file, cb) {
-    cb(null, "uploads/gallery/");
-  },
-
-  filename: function (req, file, cb) {
-
-    const uniqueName =
-      Date.now() +
-      "-" +
-      file.originalname.replace(/\s+/g, "-");
-
-    cb(null, uniqueName);
-  }
-
-});
 const upload = multer({
   storage: storage
 });
@@ -102,21 +84,17 @@ const db = mysql.createPool({
 
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
-  connectTimeout: 10000
-});
 
-db.on("error", function (err) {
-  console.error("MySQL pool error:", err);
+  connectTimeout: 10000
 });
 
 db.query("SELECT 1", function (err) {
   if (err) {
-    console.error("MySQL connection error:", err.message);
+    console.log("MySQL connection error:", err.message);
   } else {
     console.log("MySQL connected successfully!");
   }
 });
-
 
 // =========================
 // HOME
@@ -550,45 +528,68 @@ app.post(
       });
     }
 
-    const image = "/uploads/gallery/" + req.file.filename;
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: "vk-events/gallery"
+      },
+      function (error, result) {
 
-    const sql = `
-      INSERT INTO gallery
-      (title, category, image)
-      VALUES (?, ?, ?)
-    `;
-
-    db.query(
-      sql,
-      [title, category, image],
-      function (err, result) {
-
-        if (err) {
+        if (error) {
           console.log(
-            "Gallery upload database error:",
-            err.message
+            "Cloudinary upload error:",
+            error.message
           );
 
           return res.status(500).json({
             success: false,
-            message: "Failed to save gallery image."
+            message: "Failed to upload gallery image."
           });
         }
 
-        console.log(
-          "Gallery image uploaded:",
-          result.insertId
-        );
+        const image = result.secure_url;
 
-        res.json({
-          success: true,
-          message: "Gallery image uploaded successfully!",
-          id: result.insertId,
-          image: image
-        });
+        const sql = `
+          INSERT INTO gallery
+          (title, category, image)
+          VALUES (?, ?, ?)
+        `;
+
+        db.query(
+          sql,
+          [title, category, image],
+          function (err, dbResult) {
+
+            if (err) {
+              console.log(
+                "Gallery upload database error:",
+                err.message
+              );
+
+              return res.status(500).json({
+                success: false,
+                message: "Failed to save gallery image."
+              });
+            }
+
+            console.log(
+              "Gallery image uploaded:",
+              dbResult.insertId
+            );
+
+            res.json({
+              success: true,
+              message: "Gallery image uploaded successfully!",
+              id: dbResult.insertId,
+              image: image
+            });
+
+          }
+        );
 
       }
     );
+
+    uploadStream.end(req.file.buffer);
 
   }
 );
