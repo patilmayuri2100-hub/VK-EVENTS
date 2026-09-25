@@ -538,11 +538,13 @@ app.post(
       },
       function (error, result) {
 
-  if (error) {
-  console.log("CLOUDINARY STATUS:", error.http_code);
-  console.log("CLOUDINARY ERROR:", error.error);
-  console.log("CLOUDINARY MESSAGE:", error.message);
-  console.log("CLOUDINARY HEADERS:", error.headers);
+if (error) {
+  console.log("FULL CLOUDINARY ERROR:", JSON.stringify(error, null, 2));
+  console.log("CLOUDINARY ERROR KEYS:", Object.keys(error));
+
+  if (error.response) {
+    console.log("CLOUDINARY RESPONSE:", error.response);
+  }
 
   return res.status(500).json({
     success: false,
