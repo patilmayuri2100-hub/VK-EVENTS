@@ -687,6 +687,76 @@ app.get("/api/reviews", function (req, res) {
     }
   );
 });
+// Get all reviews for admin
+app.get("/api/admin/reviews", function (req, res) {
+
+  const sql = `
+    SELECT id, name, rating, comment, status, created_at
+    FROM reviews
+    ORDER BY created_at DESC
+  `;
+
+  db.query(sql, function (err, results) {
+
+    if (err) {
+      console.log("Admin reviews fetch error:", err.message);
+
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch reviews."
+      });
+    }
+
+    res.json({
+      success: true,
+      reviews: results
+    });
+
+  });
+});
+
+
+// Approve or reject a review
+app.put("/api/admin/reviews/:id", function (req, res) {
+
+  const { status } = req.body;
+  const reviewId = req.params.id;
+
+  if (!["approved", "rejected"].includes(status)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid review status."
+    });
+  }
+
+  const sql = `
+    UPDATE reviews
+    SET status = ?
+    WHERE id = ?
+  `;
+
+  db.query(
+    sql,
+    [status, reviewId],
+    function (err, result) {
+
+      if (err) {
+        console.log("Review update error:", err.message);
+
+        return res.status(500).json({
+          success: false,
+          message: "Failed to update review."
+        });
+      }
+
+      res.json({
+        success: true,
+        message: `Review ${status} successfully.`
+      });
+
+    }
+  );
+});
 // =========================
 // VIDEO UPLOAD
 // =========================
