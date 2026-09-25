@@ -31,7 +31,7 @@ if (!fs.existsSync(uploadDir)) {
 // GALLERY UPLOAD SETUP
 // =========================
 const upload = multer({
-  storage: storage
+  storage: multer.memoryStorage()
 });
 const videoStorage = multer.diskStorage({
   destination: function (req, file, cb) {
