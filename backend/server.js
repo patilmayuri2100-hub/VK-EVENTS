@@ -539,7 +539,9 @@ app.post(
       function (error, result) {
 
         if (error) {
-       console.log("Cloudinary upload error:", error);
+      console.log("CLOUDINARY STATUS:", error.http_code);
+console.log("CLOUDINARY ERROR:", error.error);
+console.log("CLOUDINARY MESSAGE:", error.message);
 
           return res.status(500).json({
             success: false,
