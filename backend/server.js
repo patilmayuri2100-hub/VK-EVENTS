@@ -538,16 +538,17 @@ app.post(
       },
       function (error, result) {
 
-        if (error) {
-      console.log("CLOUDINARY STATUS:", error.http_code);
-console.log("CLOUDINARY ERROR:", error.error);
-console.log("CLOUDINARY MESSAGE:", error.message);
+  if (error) {
+  console.log("CLOUDINARY STATUS:", error.http_code);
+  console.log("CLOUDINARY ERROR:", error.error);
+  console.log("CLOUDINARY MESSAGE:", error.message);
+  console.log("CLOUDINARY HEADERS:", error.headers);
 
-          return res.status(500).json({
-            success: false,
-            message: "Failed to upload gallery image."
-          });
-        }
+  return res.status(500).json({
+    success: false,
+    message: "Failed to upload gallery image."
+  });
+}
 
         const image = result.secure_url;
 
