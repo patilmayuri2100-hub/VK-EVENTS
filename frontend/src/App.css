@@ -516,7 +516,67 @@ a {
   outline: none;
   font-size: 14px;
 }
+.reviews-section {
+  padding: 80px 8%;
+  background: #080808;
+  color: white;
+  text-align: center;
+}
 
+.review-form {
+  max-width: 650px;
+  margin: 40px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.review-form input,
+.review-form select,
+.review-form textarea {
+  width: 100%;
+  padding: 15px 18px;
+  border: 1px solid #333;
+  background: #111;
+  color: white;
+  border-radius: 6px;
+  font-size: 15px;
+  outline: none;
+}
+
+.review-form input:focus,
+.review-form select:focus,
+.review-form textarea:focus {
+  border-color: #d4af37;
+}
+
+.review-form textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.review-form button {
+  padding: 15px 25px;
+  border: none;
+  background: #d4af37;
+  color: #000;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.review-form button:hover {
+  background: #f0c75e;
+  transform: translateY(-2px);
+}
+
+.review-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
 .add-event-section input:focus,
 .add-event-section select:focus,
 .add-event-section textarea:focus,

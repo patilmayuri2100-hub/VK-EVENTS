@@ -55,7 +55,61 @@ const [videoCategory, setVideoCategory] = useState('')
 const [videoFile, setVideoFile] = useState(null)
 const [videoUploading, setVideoUploading] = useState(false)
 const [uploadedVideos, setUploadedVideos] = useState([])
+const [reviews, setReviews] = useState([])
 
+const [reviewForm, setReviewForm] = useState({
+  name: '',
+  rating: 5,
+  comment: ''
+})
+
+const [reviewSubmitting, setReviewSubmitting] = useState(false)
+const submitReview = async (e) => {
+  e.preventDefault();
+
+  if (!reviewForm.name || !reviewForm.comment) {
+    alert("Please fill all required fields.");
+    return;
+  }
+
+  try {
+    setReviewSubmitting(true);
+
+    const response = await fetch(
+      "https://vk-events.onrender.com/api/reviews",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(reviewForm)
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      alert(data.message || "Failed to submit review.");
+      return;
+    }
+
+    alert(
+      "Thank you for your review! It will appear after admin approval."
+    );
+
+    setReviewForm({
+      name: "",
+      rating: 5,
+      comment: ""
+    });
+
+  } catch (error) {
+    console.error("Review submission error:", error);
+    alert("Something went wrong. Please try again.");
+  } finally {
+    setReviewSubmitting(false);
+  }
+};
 const handleEventChange = (e) => {
   const { name, value } = e.target
 
@@ -2154,6 +2208,80 @@ const galleryImages = [
 
   </section>
 )}
+{/* =========================
+ CUSTOMER REVIEWS
+ ========================= */}
+
+<section id="reviews" className="reviews-section">
+
+  <div className="section-heading">
+    <p>WHAT OUR CUSTOMERS SAY</p>
+
+    <h2>Customer Reviews</h2>
+
+    <div className="gold-line"></div>
+  </div>
+
+  <p className="contact-intro">
+    Have we made your event special? Share your experience with us!
+  </p>
+
+  <form
+    className="review-form"
+    onSubmit={submitReview}
+  >
+
+    <input
+      type="text"
+      placeholder="Your Name *"
+      value={reviewForm.name}
+      onChange={(e) =>
+        setReviewForm({
+          ...reviewForm,
+          name: e.target.value
+        })
+      }
+      required
+    />
+
+    <select
+      value={reviewForm.rating}
+      onChange={(e) =>
+        setReviewForm({
+          ...reviewForm,
+          rating: Number(e.target.value)
+        })
+      }
+    >
+      <option value={5}>★★★★★ 5 Stars</option>
+      <option value={4}>★★★★☆ 4 Stars</option>
+      <option value={3}>★★★☆☆ 3 Stars</option>
+      <option value={2}>★★☆☆☆ 2 Stars</option>
+      <option value={1}>★☆☆☆☆ 1 Star</option>
+    </select>
+
+    <textarea
+      placeholder="Write your review *"
+      value={reviewForm.comment}
+      onChange={(e) =>
+        setReviewForm({
+          ...reviewForm,
+          comment: e.target.value
+        })
+      }
+      required
+    ></textarea>
+
+    <button
+      type="submit"
+      disabled={reviewSubmitting}
+    >
+      {reviewSubmitting ? "SUBMITTING..." : "SUBMIT REVIEW"}
+    </button>
+
+  </form>
+
+</section>
    {/* =========================
     BOOK YOUR EVENT
     ========================= */}
