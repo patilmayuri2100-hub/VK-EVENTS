@@ -191,7 +191,7 @@ app.post("/api/bookings", async function (req, res) {
       "New booking saved: " + result.insertId
     );
     console.log("ABOUT TO SEND BOOKING EMAIL");
-   await sendEmail(
+   sendEmail(
   "New Event Booking - VK EVENTS",
   `New booking received.
 
