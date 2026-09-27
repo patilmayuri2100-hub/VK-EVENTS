@@ -8746,3 +8746,63 @@ body {
   border-color: #b52b2b;
   transform: translateY(-2px);
 }
+.contact-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: nowrap;
+  margin-top: 30px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.contact-item:hover {
+  transform: translateY(-3px);
+  border-color: #d4af37;
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.15);
+}
+
+.contact-item > span {
+  font-size: 21px;
+}
+
+.contact-item strong {
+  display: block;
+  color: #d4af37;
+  font-size: 13px;
+  margin-bottom: 3px;
+}
+
+.contact-item a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 13px;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.contact-item a:hover {
+  color: #d4af37;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .contact-info {
+    flex-wrap: wrap;
+  }
+
+  .contact-item {
+    padding: 12px 15px;
+  }
+}
