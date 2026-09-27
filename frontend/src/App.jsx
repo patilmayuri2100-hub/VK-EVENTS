@@ -1805,55 +1805,41 @@ const galleryImages = [
   </div>
 
 </section>
-{/* =========================
-    CONTACT
-    ========================= */}
+<div className="contact-info">
 
-<section id="contact" className="contact-section">
-
-  <div className="section-heading">
-
-    <p>GET IN TOUCH</p>
-
-    <h2>Contact VK EVENTS</h2>
-
-    <div className="gold-line"></div>
-
+  <div className="contact-item">
+    <span>📞</span>
+    <div>
+      <strong>Call Us</strong>
+      <a href="tel:+919424455947">9424455947</a>
+    </div>
   </div>
 
-  <p className="contact-intro">
-    Have an event in mind? Get in touch with our team and let's make it memorable.
-  </p>
-
-  <div className="contact-info">
-
-    <div className="contact-item">
-      <span>📞</span>
-      <div>
-        <strong>Call Us</strong>
-        <p>9424455947</p>
-      </div>
+  <div className="contact-item">
+    <span>💬</span>
+    <div>
+      <strong>WhatsApp</strong>
+      <a
+        href="https://wa.me/919424455947?text=Hello%20VK%20EVENTS,%20I%20would%20like%20to%20know%20more%20about%20your%20event%20services."
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Chat with us
+      </a>
     </div>
-
-    <div className="contact-item">
-      <span>💬</span>
-      <div>
-        <strong>WhatsApp</strong>
-        <p>Available for enquiries</p>
-      </div>
-    </div>
-
-    <div className="contact-item">
-      <span>📸</span>
-      <div>
-        <strong>Instagram</strong>
-        <p>@vk_events_services</p>
-      </div>
-    </div>
-
   </div>
 
-</section>
+  <div className="contact-item">
+    <span>📧</span>
+    <div>
+      <strong>Email</strong>
+      <a href="mailto:vkevents.services06@gmail.com">
+        vkevents.services06@gmail.com
+      </a>
+    </div>
+  </div>
+
+</div>
 {/* =========================
     ADMIN DASHBOARD
     ========================= */}
@@ -2476,20 +2462,27 @@ const galleryImages = [
     </button>
 
   </form>
+<div className="contact-info">
 
-  <div className="contact-info">
-
-    <div className="contact-item">
-      <span>📞</span>
-      <p>9424455947</p>
-    </div>
-
-    <div className="contact-item">
-      <span>💬</span>
-      <p>WhatsApp Available</p>
-    </div>
-
+  <div className="contact-item">
+    <span>📞</span>
+    <a href="tel:+919424455947">
+      9424455947
+    </a>
   </div>
+
+  <div className="contact-item">
+    <span>💬</span>
+    <a
+      href="https://wa.me/919424455947?text=Hello%20VK%20EVENTS,%20I%20would%20like%20to%20know%20more%20about%20your%20event%20services."
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      WhatsApp Available
+    </a>
+  </div>
+
+</div>
 
 </section>
 
