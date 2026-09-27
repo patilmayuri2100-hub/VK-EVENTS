@@ -1170,7 +1170,7 @@ const galleryImages = [
       </a>
 
       <a
-        href="https://wa.me/919424455947"
+        href="https://wa.me/919424455947?text=Hello%20VK%20EVENTS,%20I%20would%20like%20to%20know%20more%20about%20your%20event%20services."
         target="_blank"
         rel="noopener noreferrer"
         className="hero-outline-button"
@@ -2375,7 +2375,7 @@ const galleryImages = [
 
       try {
         const response = await fetch(
-          "https://vk-events.onrender.com/api/bookings",
+          "http://localhost:5000/api/bookings",
           {
             method: "POST",
             headers: {
