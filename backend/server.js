@@ -20,7 +20,9 @@ require('dotenv').config();
 
 const app = express();
 const emailTransporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   family: 4,
   connectionTimeout: 10000,
   greetingTimeout: 10000,
