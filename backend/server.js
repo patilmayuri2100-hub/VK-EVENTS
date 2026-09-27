@@ -21,6 +21,7 @@ require('dotenv').config();
 const app = express();
 const emailTransporter = nodemailer.createTransport({
   service: "gmail",
+  family: 4,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
@@ -249,7 +250,7 @@ app.get("/api/bookings", function (req, res) {
 
 
 // =========================
-// DELETE BOOKING
+// DELETE BOOKIN
 // =========================
 
 app.delete("/api/bookings/:id", function (req, res) {
