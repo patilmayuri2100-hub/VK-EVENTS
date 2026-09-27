@@ -1,4 +1,10 @@
 const express = require("express");
+let resend;
+
+(async () => {
+  const { Resend } = await import("resend");
+  resend = new Resend(process.env.RESEND_API_KEY);
+})();
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 const mysql = require("mysql2");
@@ -34,16 +40,17 @@ const emailTransporter = nodemailer.createTransport({
 });
 async function sendEmail(subject, message) {
   try {
-    await emailTransporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER,
+    const result = await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: "vkevents.services06@gmail.com",
       subject: subject,
       text: message
     });
 
+    console.log("RESEND RESULT:", result);
     console.log("Email notification sent successfully.");
   } catch (error) {
-    console.log("Email notification error:", error.message);
+    console.log("RESEND ERROR:", error);
   }
 }
 const uploadDir = path.join(__dirname, "uploads");
