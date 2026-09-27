@@ -1,4 +1,5 @@
 const express = require("express");
+const nodemailer = require("nodemailer");
 const cors = require("cors");
 const mysql = require("mysql2");
 const multer = require("multer");
@@ -18,6 +19,27 @@ console.log("Cloudinary configured:", {
 require('dotenv').config();
 
 const app = express();
+const emailTransporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+async function sendEmail(subject, message) {
+  try {
+    await emailTransporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
+      subject: subject,
+      text: message
+    });
+
+    console.log("Email notification sent successfully.");
+  } catch (error) {
+    console.log("Email notification error:", error.message);
+  }
+}
 const uploadDir = path.join(__dirname, "uploads");
 const videoUploadDir = path.join(__dirname, "uploads", "videos");
 const galleryUploadDir = path.join(__dirname, "uploads", "gallery");
@@ -112,7 +134,8 @@ app.get("/", function (req, res) {
 // ADD BOOKING
 // =========================
 
-app.post("/api/bookings", function (req, res) {
+app.post("/api/bookings", async function (req, res) {
+  console.log("BOOKING ROUTE HIT");
 
   const name = req.body.name;
   const phone = req.body.phone;
@@ -150,7 +173,7 @@ app.post("/api/bookings", function (req, res) {
     message || null
   ];
 
-  db.query(sql, values, function (err, result) {
+  db.query(sql, values, async function (err, result) {
 
     if (err) {
       console.log(
@@ -166,7 +189,19 @@ app.post("/api/bookings", function (req, res) {
     console.log(
       "New booking saved: " + result.insertId
     );
+    console.log("ABOUT TO SEND BOOKING EMAIL");
+   await sendEmail(
+  "New Event Booking - VK EVENTS",
+  `New booking received.
 
+Name: ${name}
+Phone: ${phone}
+Event Type: ${event_type}
+Event Date: ${event_date}
+Location: ${location}
+Guests: ${guests}
+Message: ${message || "No message provided"}`
+);
     return res.json({
       success: true,
       message: "Booking enquiry submitted successfully!",
