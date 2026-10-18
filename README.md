@@ -1,23 +1,27 @@
 # VK EVENTS — Event Management Website
 
-## About the Project
-VK EVENTS is an event management website that showcases services and allows visitors to explore event offerings and submit enquiries.
+A website for showcasing event management services and helping customers submit event enquiries.
 
 ## Features
 - Event service information
-- Enquiry form
+- Event enquiry form
 - Event gallery
-- User-friendly website interface
+- Frontend and backend project structure
 
-## Technologies Used
+## Technologies
 - HTML
 - CSS
 - JavaScript
 
+## Project Structure
+- `frontend/` — Frontend application
+- `backend/` — Backend application
+
 ## Live Website
 https://vkeventsservices.in
 
-## Author
+## Developer
 **Mayuri Patil**
 
-GitHub: https://github.com/patilmayuri2100-hub
+- GitHub: https://github.com/patilmayuri2100-hub
+- LinkedIn: https://www.linkedin.com/in/mayuri-patil-cse
