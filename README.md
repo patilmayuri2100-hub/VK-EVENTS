@@ -1,7 +1,9 @@
 # VK EVENTS — Event Management Website
 
 A website for showcasing event management services and helping customers submit event enquiries.
+## Website Preview
 
+![VK EVENTS Homepage](vk-events-homepage.png)
 ## Features
 - Event service information
 - Event enquiry form
